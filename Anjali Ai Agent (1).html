@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CampusIQ — College Agent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1C2B44;
+    --paper: #E9ECEF;
+    --surface: #FFFFFF;
+    --surface-2: #F3F5F7;
+    --accent: #A9821E;
+    --accent-soft: #F3ECD8;
+    --good: #2F7D5C;
+    --good-soft: #E5F1EB;
+    --target: #2D5FA3;
+    --target-soft: #E4ECF7;
+    --stretch: #B07418;
+    --stretch-soft: #F7EDDA;
+    --long: #8C4A3A;
+    --text-primary: #1C2331;
+    --text-muted: #5D6675;
+    --border: #D7DAE0;
+    --btn-bg: #1C2B44;
+    --btn-fg: #FFFFFF;
+    --tray-bg: #1C2B44;
+    --radius: 8px;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #0C121D;
+      --paper: #0F1520;
+      --surface: #171F2D;
+      --surface-2: #1D2636;
+      --accent: #D6AC3E;
+      --accent-soft: #2B2615;
+      --good: #5CC096;
+      --good-soft: #15291F;
+      --target: #7FAAEA;
+      --target-soft: #16233A;
+      --stretch: #E3AD4D;
+      --stretch-soft: #2D2411;
+      --long: #D98D79;
+      --text-primary: #E6EAF2;
+      --text-muted: #9AA5B8;
+      --border: #2A3548;
+      --btn-bg: #D6AC3E;
+      --btn-fg: #1A1405;
+      --tray-bg: #0A0F18;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink: #0C121D;
+    --paper: #0F1520;
+    --surface: #171F2D;
+    --surface-2: #1D2636;
+    --accent: #D6AC3E;
+    --accent-soft: #2B2615;
+    --good: #5CC096;
+    --good-soft: #15291F;
+    --target: #7FAAEA;
+    --target-soft: #16233A;
+    --stretch: #E3AD4D;
+    --stretch-soft: #2D2411;
+    --long: #D98D79;
+    --text-primary: #E6EAF2;
+    --text-muted: #9AA5B8;
+    --border: #2A3548;
+    --btn-bg: #D6AC3E;
+    --btn-fg: #1A1405;
+    --tray-bg: #0A0F18;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    line-height: 1.45;
+  }
+
+  header {
+    background: var(--ink);
+    color: #EEF1F5;
+    padding: 16px 28px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    border-bottom: 3px solid var(--accent);
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 15;
+  }
+  .wordmark { font-family: 'Libre Caslon Display', Georgia, serif; font-size: 1.4rem; letter-spacing: 0.01em; }
+  header .tagline { font-size: 0.82rem; color: #B7BFCB; }
+
+  main {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 28px 20px 110px;
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+  }
+
+  /* ---------- Profile panel ---------- */
+  .profile-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 18px;
+    position: sticky;
+    top: calc(env(safe-area-inset-top, 0px) + 84px);
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+  }
+  .profile-panel h2 { font-family: 'Libre Caslon Display', Georgia, serif; font-size: 1.15rem; margin: 0 0 4px; font-weight: 400; }
+  .profile-panel .sub { font-size: 0.78rem; color: var(--text-muted); margin: 0 0 16px; }
+
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--text-muted); margin-bottom: 6px;
+  }
+  .field input[type="number"], .field select {
+    width: 100%; padding: 9px 10px;
+    border: 1px solid var(--border); border-radius: 5px;
+    background: var(--surface-2); color: var(--text-primary);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.86rem;
+  }
+  .field select { font-family: 'Inter', sans-serif; font-size: 0.86rem; }
+  .field input:focus, .field select:focus { outline: none; border-color: var(--accent); background: var(--surface); }
+  .hint { font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; }
+
+  details.weights { border-top: 1px solid var(--border); margin-top: 6px; padding-top: 10px; }
+  details.weights summary { cursor: pointer; font-size: 0.82rem; font-weight: 500; list-style: none; }
+  details.weights summary::-webkit-details-marker { display: none; }
+  details.weights summary::after { content: '＋'; float: right; color: var(--text-muted); }
+  details.weights[open] summary::after { content: '－'; }
+  .wrow { margin-top: 12px; }
+  .wrow label { display: flex; justify-content: space-between; font-size: 0.76rem; color: var(--text-muted); margin-bottom: 4px; text-transform: none; letter-spacing: 0; }
+  .wrow input[type="range"] { width: 100%; accent-color: var(--accent); }
+
+  .reset-link {
+    display: block; width: 100%; text-align: center; margin-top: 12px;
+    font-size: 0.78rem; color: var(--text-muted); background: none; border: none;
+    cursor: pointer; text-decoration: underline; text-underline-offset: 2px; font-family: inherit;
+  }
+  .reset-link:hover { color: var(--accent); }
+
+  /* ---------- Advisor ---------- */
+  .advisor {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 18px;
+    display: none;
+  }
+  .advisor.show { display: block; }
+  .advisor h2 { font-family: 'Libre Caslon Display', Georgia, serif; font-weight: 400; font-size: 1.1rem; margin: 0 0 2px; }
+  .advisor .sub { font-size: 0.78rem; color: var(--text-muted); margin: 0 0 12px; }
+  .advisor-offline { font-size: 0.78rem; color: var(--text-muted); margin: 0 0 16px; padding: 10px 14px; border: 1px dashed var(--border); border-radius: var(--radius); display: none; }
+  .advisor-offline.show { display: block; }
+  .suggest-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .suggest {
+    font-family: inherit; font-size: 0.76rem; padding: 5px 10px; border-radius: 20px;
+    border: 1px solid var(--border); background: var(--surface-2); color: var(--text-primary); cursor: pointer;
+  }
+  .suggest:hover { border-color: var(--accent); }
+  .ask-row { display: flex; gap: 8px; }
+  .ask-row input {
+    flex: 1; min-width: 0; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px;
+    background: var(--surface-2); color: var(--text-primary); font-family: inherit; font-size: 0.88rem;
+  }
+  .ask-row input:focus { outline: none; border-color: var(--accent); background: var(--surface); }
+  .btn {
+    font-family: inherit; font-weight: 500; font-size: 0.85rem; border: none; border-radius: 6px;
+    padding: 0 16px; cursor: pointer; background: var(--btn-bg); color: var(--btn-fg);
+  }
+  .btn.ghost { background: var(--surface-2); color: var(--text-primary); border: 1px solid var(--border); }
+  .btn:disabled { opacity: 0.5; cursor: default; }
+  .answer {
+    margin-top: 12px; padding: 12px 14px; background: var(--surface-2); border-radius: 6px;
+    font-size: 0.88rem; white-space: pre-wrap; display: none;
+  }
+  .answer.show { display: block; }
+  .answer-meta { font-size: 0.72rem; color: var(--text-muted); margin-top: 8px; min-height: 1em; }
+
+  /* ---------- Results header ---------- */
+  .results-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
+  .results-head h1 { font-family: 'Libre Caslon Display', Georgia, serif; font-weight: 400; font-size: 1.5rem; margin: 0; }
+  .scope-line { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; color: var(--text-muted); }
+
+  .notice {
+    border-radius: var(--radius); padding: 10px 14px; font-size: 0.84rem; margin: 12px 0;
+    background: var(--stretch-soft); border: 1px solid var(--stretch); color: var(--text-primary);
+  }
+  .notice.info { background: var(--target-soft); border-color: var(--target); }
+  .notice strong { font-weight: 600; }
+
+  .toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 12px 0 16px; }
+  .chip {
+    font-family: inherit; font-size: 0.78rem; padding: 6px 12px; border-radius: 20px;
+    border: 1px solid var(--border); background: var(--surface); color: var(--text-primary); cursor: pointer;
+  }
+  .chip .n { font-family: 'IBM Plex Mono', monospace; margin-left: 4px; color: var(--text-muted); }
+  .chip.active { background: var(--btn-bg); color: var(--btn-fg); border-color: var(--btn-bg); }
+  .chip.active .n { color: inherit; opacity: 0.8; }
+  .toolbar .spacer { flex: 1; }
+  .toolbar select, .toolbar label.tog {
+    font-size: 0.8rem; color: var(--text-primary);
+  }
+  .toolbar select {
+    padding: 7px 10px; border: 1px solid var(--border); border-radius: 5px; background: var(--surface); font-family: inherit;
+  }
+  label.tog { display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--text-muted); }
+
+  /* ---------- Cards ---------- */
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 16px 18px; margin-bottom: 12px;
+    display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 14px; align-items: start;
+    opacity: 0; transform: translateY(6px); animation: reveal 0.35s ease forwards;
+    transition: box-shadow 0.18s ease, border-color 0.18s ease;
+  }
+  .card:hover { box-shadow: 0 6px 18px rgba(0,0,0,0.10); border-color: var(--accent); }
+  @keyframes reveal { to { opacity: 1; transform: translateY(0); } }
+  .rank { font-family: 'Libre Caslon Display', Georgia, serif; font-size: 1.25rem; color: var(--text-muted); padding-top: 2px; }
+  .name-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .name { font-weight: 600; font-size: 1rem; }
+  .tag {
+    font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.04em; padding: 2px 8px; border-radius: 20px; font-weight: 600;
+  }
+  .tag.safe { background: var(--good-soft); color: var(--good); }
+  .tag.target { background: var(--target-soft); color: var(--target); }
+  .tag.reach { background: var(--stretch-soft); color: var(--stretch); }
+  .tag.long { background: var(--surface-2); color: var(--long); }
+  .tag.type { background: var(--surface-2); color: var(--text-muted); text-transform: none; letter-spacing: 0; font-weight: 500; }
+
+  .meta { margin-top: 5px; font-size: 0.82rem; color: var(--text-muted); display: flex; flex-wrap: wrap; gap: 4px 14px; }
+  .meta .mono { font-family: 'IBM Plex Mono', monospace; }
+  .fee-row { margin-top: 8px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 0.86rem; }
+  .fee { font-family: 'IBM Plex Mono', monospace; font-weight: 500; }
+  .basis { font-size: 0.68rem; padding: 2px 8px; border-radius: 4px; font-weight: 500; }
+  .basis.official { background: var(--good-soft); color: var(--good); }
+  .basis.reported { background: var(--stretch-soft); color: var(--stretch); }
+  .basis.est { border: 1px dashed var(--text-muted); color: var(--text-muted); }
+  .exams { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .exam { font-size: 0.7rem; font-family: 'IBM Plex Mono', monospace; padding: 2px 7px; border-radius: 4px; background: var(--surface-2); color: var(--text-muted); }
+  .verify-line { margin-top: 8px; font-size: 0.76rem; color: var(--text-muted); display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; }
+  .verify-line .ok { color: var(--good); }
+  .verify-line a { color: var(--accent); text-decoration: none; font-weight: 500; }
+  .verify-line a:hover { text-decoration: underline; }
+  .near-tag { font-size: 0.74rem; color: var(--target); margin-top: 6px; }
+
+  .why-toggle { background: none; border: none; padding: 8px 0 0; font-family: inherit; font-size: 0.8rem; font-weight: 500; color: var(--accent); cursor: pointer; }
+  .why { display: none; margin-top: 8px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 0.84rem; }
+  .why.open { display: block; }
+  .bars { display: grid; gap: 6px; margin-top: 10px; }
+  .bar-row { display: grid; grid-template-columns: 130px 1fr 32px; gap: 8px; align-items: center; font-size: 0.74rem; color: var(--text-muted); }
+  .bar { height: 6px; border-radius: 3px; background: var(--surface-2); overflow: hidden; }
+  .bar > i { display: block; height: 100%; background: var(--accent); border-radius: 3px; }
+  .bar-row .v { font-family: 'IBM Plex Mono', monospace; text-align: right; color: var(--text-primary); }
+
+  .side { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+  .ring { position: relative; width: 56px; height: 56px; }
+  .ring svg { transform: rotate(-90deg); }
+  .ring .track { fill: none; stroke: var(--border); stroke-width: 4; }
+  .ring .fill { fill: none; stroke-width: 4; stroke-linecap: round; transition: stroke-dashoffset 0.7s ease; }
+  .ring .fill.safe { stroke: var(--good); } .ring .fill.target { stroke: var(--target); }
+  .ring .fill.reach { stroke: var(--stretch); } .ring .fill.long { stroke: var(--long); }
+  .ring .lbl { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .ring .num { font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 0.86rem; line-height: 1; }
+  .ring .cap { font-size: 0.44rem; letter-spacing: 0.04em; color: var(--text-muted); margin-top: 1px; }
+  .cmp { display: flex; align-items: center; gap: 6px; font-size: 0.76rem; color: var(--text-muted); cursor: pointer; }
+
+  .more { display: block; width: 100%; padding: 11px; margin: 4px 0 12px; font-family: inherit; font-size: 0.86rem; background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius); color: var(--text-primary); cursor: pointer; }
+  .more:hover { border-color: var(--accent); }
+
+  .empty { background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius); padding: 36px 20px; text-align: center; color: var(--text-muted); font-size: 0.9rem; }
+
+  details.sources { margin-top: 26px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 18px; font-size: 0.82rem; }
+  details.sources summary { cursor: pointer; font-weight: 600; }
+  details.sources ul { margin: 10px 0 0; padding-left: 18px; color: var(--text-muted); }
+  details.sources li { margin: 4px 0; }
+  details.sources a { color: var(--accent); }
+  details.sources p { color: var(--text-muted); margin: 10px 0 0; }
+
+  /* ---------- Compare ---------- */
+  .tray {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--tray-bg); color: #fff;
+    padding: 12px 22px calc(12px + env(safe-area-inset-bottom, 0px)); display: none; align-items: center; justify-content: space-between; gap: 14px;
+  }
+  .tray.show { display: flex; }
+  .tray .chips { display: flex; flex-wrap: wrap; gap: 6px; font-size: 0.78rem; color: #C9CFDA; }
+  .tray .chips span { background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 20px; }
+  .tray button { background: var(--accent); color: #1A1405; border: none; padding: 9px 16px; border-radius: 5px; font-weight: 600; font-size: 0.84rem; cursor: pointer; font-family: inherit; flex-shrink: 0; }
+  .overlay { display: none; position: fixed; inset: 0; z-index: 30; background: rgba(8,12,20,0.6); align-items: center; justify-content: center; padding: 20px; }
+  .overlay.show { display: flex; }
+  .modal { background: var(--surface); color: var(--text-primary); border-radius: var(--radius); width: 100%; max-width: 920px; max-height: 86vh; overflow: auto; padding: 22px; }
+  .modal h2 { font-family: 'Libre Caslon Display', Georgia, serif; font-weight: 400; margin: 0 0 14px; display: flex; justify-content: space-between; align-items: baseline; }
+  .modal .close { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.85rem; font-family: inherit; }
+  .table-wrap { overflow-x: auto; }
+  table.cmp-t { width: 100%; border-collapse: collapse; font-size: 0.82rem; min-width: 520px; }
+  table.cmp-t th, table.cmp-t td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  table.cmp-t th.r { color: var(--text-muted); font-weight: 500; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; }
+  table.cmp-t thead th { font-family: 'Libre Caslon Display', Georgia, serif; font-weight: 400; font-size: 0.95rem; border-bottom: 2px solid var(--ink); }
+  table.cmp-t td.m { font-family: 'IBM Plex Mono', monospace; }
+
+  .picks-h { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin: 4px 0 8px; }
+  .picks { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; margin-bottom: 16px; }
+  .pick { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; }
+  .pick .pn { font-weight: 600; font-size: 0.88rem; margin: 6px 0 2px; }
+  .pick .pm { font-size: 0.76rem; color: var(--text-muted); }
+  .band { font-size: 0.66rem; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+  .band.low { background: var(--good-soft); color: var(--good); } .band.mid { background: var(--target-soft); color: var(--target); } .band.premium { background: var(--stretch-soft); color: var(--stretch); }
+  .field input[type="text"], .field input[type="password"] { width: 100%; padding: 9px 10px; border: 1px solid var(--border); border-radius: 5px; background: var(--surface-2); color: var(--text-primary); font-family: 'IBM Plex Mono', monospace; font-size: 0.82rem; }
+  @media (max-width: 860px) {
+    main { grid-template-columns: 1fr; padding-top: 18px; }
+    .profile-panel { position: static; max-height: none; }
+    .card { grid-template-columns: 1fr auto; }
+    .rank { display: none; }
+    .bar-row { grid-template-columns: 110px 1fr 30px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wordmark">CampusIQ</div>
+  <div class="tagline" id="tagline">Real colleges · state → district → town</div>
+</header>
+
+<main>
+  <!-- PROFILE -->
+  <section class="profile-panel" aria-label="Your profile">
+    <h2>Your profile</h2>
+    <p class="sub">Results update as you change anything.</p>
+
+    <div class="field">
+      <label for="marks">Entrance percentile / merit % <span id="marks-v"></span></label>
+      <input type="number" id="marks" value="88" min="0" max="100" step="0.1" inputmode="decimal">
+      <div class="hint">MHT-CET / JEE Main percentile, or your best comparable score (0–100).</div>
+    </div>
+
+    <div class="field">
+      <label for="budget">Budget per year (₹) <span id="budget-v"></span></label>
+      <input type="number" id="budget" value="150000" min="0" step="5000" inputmode="numeric">
+    </div>
+
+    <div class="field">
+      <label for="course">Course</label>
+      <select id="course"></select>
+    </div>
+
+    <div class="field">
+      <label for="state">State</label>
+      <select id="state"></select>
+    </div>
+
+    <div class="field">
+      <label for="district">District</label>
+      <select id="district"></select>
+    </div>
+
+    <div class="field">
+      <label for="city">Town / city</label>
+      <select id="city"></select>
+    </div>
+
+    <div class="field">
+      <label for="ctype">Type of college</label>
+      <select id="ctype">
+        <option value="any">Any</option>
+        <option value="govt">Government / aided / central</option>
+        <option value="private">Private / deemed</option>
+      </select>
+    </div>
+
+    <details class="weights">
+      <summary>What matters most to you</summary>
+      <div class="wrow"><label for="w-fit">Admission chance <span id="w-fit-v"></span></label><input type="range" id="w-fit" min="0" max="10" value="6"></div>
+      <div class="wrow"><label for="w-aff">Affordability <span id="w-aff-v"></span></label><input type="range" id="w-aff" min="0" max="10" value="5"></div>
+      <div class="wrow"><label for="w-str">Institute strength <span id="w-str-v"></span></label><input type="range" id="w-str" min="0" max="10" value="3"></div>
+      <div class="wrow"><label for="w-prox">Closeness to chosen place <span id="w-prox-v"></span></label><input type="range" id="w-prox" min="0" max="10" value="3"></div>
+    </details>
+
+    <button class="reset-link" id="reset-btn">Reset everything</button>
+  </section>
+
+  <!-- RESULTS -->
+  <section>
+    <div class="advisor-offline" id="advisor-offline">The AI advisor appears when this page is opened inside Claude. Search, filters, scoring and comparison all work without it.</div>
+
+    <div class="advisor" id="advisor">
+      <h2>Talk to Vee</h2>
+      <p class="sub">Vee is a smart assistant built into this page — nothing to install or set up. Write in plain sentences like “82 percentile, 1 lakh budget, Mechanical near Karad” and she updates your search and explains the options.</p>
+      <div class="suggest-row" id="suggest-row"></div>
+      <div class="ask-row">
+        <input type="text" id="ask-input" placeholder="Tell Vee what you are thinking…" aria-label="Ask the advisor">
+        <button class="btn" id="ask-btn" style="min-height:40px">Ask</button>
+        <button class="btn ghost" id="stop-btn" style="display:none">Stop</button>
+      </div>
+      <div class="answer" id="answer"></div>
+      <div class="answer-meta" id="answer-meta"></div>
+    </div>
+
+    <div class="results-head">
+      <h1 id="results-title">Matches for you</h1>
+      <span class="scope-line" id="scope-line"></span>
+    </div>
+    <div id="notices"></div>
+
+    <div class="toolbar" id="toolbar">
+      <button class="chip active" data-f="all">All<span class="n" id="n-all">0</span></button>
+      <button class="chip" data-f="safe">Likely<span class="n" id="n-safe">0</span></button>
+      <button class="chip" data-f="target">Competitive<span class="n" id="n-target">0</span></button>
+      <button class="chip" data-f="reach">Reach<span class="n" id="n-reach">0</span></button>
+      <span class="spacer"></span>
+      <label class="tog"><input type="checkbox" id="in-budget"> Only within my budget</label>
+      <label class="tog"><input type="checkbox" id="show-long"> Include long shots</label>
+      <select id="sort" aria-label="Sort results">
+        <option value="match">Sort: Best match</option>
+        <option value="fee-asc">Sort: Lowest fee</option>
+        <option value="strength">Sort: Institute strength</option>
+        <option value="name">Sort: Name</option>
+      </select>
+    </div>
+
+    <div id="picks"></div>
+    <div id="results"></div>
+
+    <details class="sources" id="sources">
+      <summary>Where this data comes from, and how to read it</summary>
+      <p><strong>Maharashtra:</strong> institutes come from the official CAP 2026-27 list and are placed in districts by their address. Branches marked “cross-checked” come from the official seat matrix; others show typical branches — open the “Official CAP page” link to confirm. Districts with no CAP-listed engineering college (for example Gadchiroli, Gondia, Hingoli) fall back to nearby districts.</p>
+      <p><strong>Institutions, districts and branches.</strong> Colleges marked “branch listing cross-checked” were matched against published listings (links below) on 14 Oct 2026. Others are well-known institutions whose branch lists were not re-checked here — confirm on the college site.</p>
+      <p><strong>Fees.</strong> “Official notice” = taken from the college’s own 2025-26 fee notice. “Reported” = figure shown by an education aggregator, which can be stale. “Estimate” = a typical band for that kind of institute, <em>not</em> a quote. Always confirm the fee for your category (CAP / institute-level / management).</p>
+      <p><strong>Required percentile.</strong> An indicative figure by selectivity tier, not an official cutoff. Real cutoffs change every year, branch and category — check the official CAP / JoSAA / college closing lists.</p>
+      <ul id="source-list"></ul>
+    </details>
+  </section>
+</main>
+
+<div class="tray" id="tray"><div class="chips" id="tray-chips"></div><button id="open-cmp">Compare selected</button></div>
+<div class="overlay" id="overlay"><div class="modal"><h2>Side by side <button class="close" id="close-cmp">Close</button></h2><div class="table-wrap" id="cmp-wrap"></div></div></div>
+
+<script>
+/* ============================= DATA ============================= */
+const COURSE = { CS: "Computer Engineering / Computer Science", IT: "Information Technology", AI: "AI, Data Science & AI-ML", EL: "Electronics & Telecommunication (E&TC)", EE: "Electrical Engineering", ME: "Mechanical Engineering", CE: "Civil Engineering", CH: "Chemical Engineering", IN: "Instrumentation Engineering", PR: "Production / Industrial Engineering", TX: "Textile Engineering / Technology", AG: "Agricultural Engineering", MC: "Mechatronics", PL: "Plastic & Polymer Engineering", AE: "Aerospace Engineering", MT: "Metallurgy & Materials", MN: "Mining Engineering", BT: "Biotechnology", BA: "Business Administration (MBA)" };
+const COURSE_OFF = { CS: 0, IT: -1, AI: -1, EL: -4, EE: -5, ME: -6, CE: -8, CH: -6, IN: -6, PR: -8, TX: -12, AG: -14, MC: -6, PL: -10, AE: -2, MT: -8, MN: -12, BT: -6, BA: 0 };
+const TIER_REQ = { 1: 98, 2: 92, 3: 84, 4: 68 };
+const TIER_STRENGTH = { 1: 100, 2: 80, 3: 60, 4: 45 };
+const TIER_LABEL = { 1: "Tier 1 · most selective", 2: "Tier 2 · highly selective", 3: "Tier 3 · selective", 4: "Tier 4 · broadly accessible" };
+const BASIS = {
+  official: { short: "Official notice", long: "official college fee notice" },
+  reported: { short: "Reported (aggregator)", long: "reported by an education aggregator" },
+  est: { short: "Estimate · verify", long: "typical band, not a quote" }
+};
+const NEARBY = {"Ahilyanagar":["Pune","Nashik","Chhatrapati Sambhajinagar","Beed","Solapur"],"Akola":["Amravati","Buldhana","Washim"],"Amravati":["Akola","Yavatmal","Wardha","Nagpur","Buldhana"],"Beed":["Ahilyanagar","Chhatrapati Sambhajinagar","Jalna","Parbhani","Latur","Dharashiv"],"Bhandara":["Nagpur","Gondia","Chandrapur"],"Buldhana":["Akola","Jalna","Jalgaon","Chhatrapati Sambhajinagar","Washim"],"Chandrapur":["Nagpur","Wardha","Yavatmal","Gadchiroli","Bhandara"],"Chhatrapati Sambhajinagar":["Jalna","Jalgaon","Beed","Ahilyanagar","Nashik"],"Dharashiv":["Latur","Beed","Solapur"],"Dhule":["Jalgaon","Nandurbar","Nashik"],"Gadchiroli":["Chandrapur","Gondia","Bhandara","Nagpur"],"Gondia":["Bhandara","Gadchiroli","Nagpur"],"Hingoli":["Nanded","Parbhani","Yavatmal","Washim"],"Jalgaon":["Dhule","Buldhana","Chhatrapati Sambhajinagar","Nashik"],"Jalna":["Chhatrapati Sambhajinagar","Beed","Parbhani","Buldhana"],"Kolhapur":["Sangli","Satara","Sindhudurg","Ratnagiri"],"Latur":["Dharashiv","Beed","Nanded"],"Mumbai":["Thane","Raigad","Palghar","Pune"],"Nagpur":["Wardha","Bhandara","Chandrapur","Amravati"],"Nanded":["Hingoli","Parbhani","Latur","Yavatmal"],"Nandurbar":["Dhule","Jalgaon"],"Nashik":["Dhule","Jalgaon","Ahilyanagar","Palghar","Thane","Pune"],"Palghar":["Thane","Mumbai","Nashik"],"Parbhani":["Hingoli","Nanded","Jalna","Beed"],"Pune":["Satara","Raigad","Solapur","Ahilyanagar","Thane","Mumbai","Nashik"],"Raigad":["Thane","Pune","Ratnagiri","Mumbai","Satara"],"Ratnagiri":["Raigad","Sindhudurg","Satara","Kolhapur"],"Sangli":["Satara","Kolhapur","Solapur"],"Satara":["Pune","Sangli","Kolhapur","Raigad","Ratnagiri","Solapur"],"Sindhudurg":["Ratnagiri","Kolhapur"],"Solapur":["Pune","Satara","Sangli","Dharashiv"],"Thane":["Mumbai","Palghar","Raigad","Nashik","Pune"],"Wardha":["Nagpur","Amravati","Yavatmal","Chandrapur"],"Washim":["Akola","Yavatmal","Hingoli","Buldhana"],"Yavatmal":["Wardha","Amravati","Washim","Nanded","Hingoli","Chandrapur"]};
+const MH_DISTRICTS = Object.keys(NEARBY);
+const SRC = {
+  dbatu: ["DBATU affiliated-institute list (Satara district colleges)", "https://dbatu.ac.in/list-of-affiliated-institute/"],
+  c360sat: ["Careers360 — engineering colleges in Satara", "https://engineering.careers360.com/colleges/list-of-engineering-colleges-in-satara"],
+  c360cs: ["Careers360 — computer science colleges in Satara", "https://university.careers360.com/colleges/list-of-computer-science-engineering-degree-colleges-in-satara"],
+  c360kol: ["Careers360 — engineering colleges in Kolhapur", "https://engineering.careers360.com/colleges/list-of-engineering-colleges-in-kolhapur"],
+  c360mba: ["Careers360 — colleges accepting MAH-MBA-CET", "https://bschool.careers360.com/colleges/list-of-mba-colleges-in-maharashtra-accepting-mah-mba-cet?page=3"],
+  c360bio: ["Careers360 — biotechnology universities in Maharashtra", "https://university.careers360.com/colleges/list-of-biotechnology-universities-in-maharashtra"],
+  c360bio2: ["Careers360 — biotechnology degree colleges in Maharashtra", "https://university.careers360.com/colleges/list-of-biotechnology-degree-colleges-in-maharashtra?page=3"],
+  c360rank: ["Careers360 — top engineering colleges in Maharashtra (NIRF)", "https://engineering.careers360.com/colleges/ranking/top-engineering-colleges-in-Maharashtra"],
+  mhtop: ["Careers360 — top B.Tech colleges in Maharashtra", "https://engineering.careers360.com/articles/list-of-top-50-btech-colleges-in-maharashtra-ranking-fees"],
+  kitfee: ["KIT’s College of Engineering, Kolhapur — official 2025-26 fee structure (PDF)", "https://www.kitcoek.in/documents/admission/2025_26/re/CAP%20Fee%20Structure%2025-26%2011092025.pdf"],
+  gcek: ["Government College of Engineering, Karad — Wikipedia", "https://en.wikipedia.org/wiki/Government_College_of_Engineering,_Karad"],
+  gcekfee: ["GCE Karad — Collegedunia courses & fees", "https://s2.collegedunia.com/college/13585-government-college-of-engineering-gcek-satara/courses-fees"],
+  coepfee: ["COEP — Collegedunia fees", "https://s2.collegedunia.com/college/28215-college-of-engineering-coep-pune/bachelor-of-technology-btech-mechanical-engineering-test-2094"]
+};
+
+const D = [];
+const c = (name, city, district, state, type, courses, tier, lo, hi, basis, exams, checked, note, src, req) => D.push({
+  id: D.length, name, city, district, state, type, courses: courses.split(","), tier, fee: [lo, hi], basis, exams,
+  checked: !!checked, note: note || "", src: src ? src.split(",") : [], req: req || TIER_REQ[tier],
+  grp: /^(Government|Govt|Central|State|Public)/.test(type) ? "govt" : "private"
+});
+
+/* ---- Maharashtra · Satara district (incl. Karad, Phaltan) ---- */
+c("Karmaveer Bhaurao Patil College of Engineering", "Satara", "Satara", "Maharashtra", "Private", "CS,ME", 4, 0.8, 1.3, "est", "MHT-CET (CAP)", 1, "Rayat Shikshan Sanstha institute; appears in DBATU’s Satara list and Careers360’s Satara CS and Mechanical lists.", "dbatu,c360sat,c360cs");
+c("Yashoda Technical Campus", "Satara", "Satara", "Maharashtra", "Private", "CS,ME,BA", 4, 0.7, 1.3, "est", "MHT-CET (CAP) · MAH-MBA-CET", 1, "Engineering and MBA programmes listed for Satara; MBA fees usually differ from B.Tech.", "dbatu,c360sat,c360cs,c360mba");
+c("Arvind Gavali College of Engineering", "Satara", "Satara", "Maharashtra", "Private", "CS,ME", 4, 0.8, 1.3, "est", "MHT-CET (CAP)", 1, "Samarth Educational Trust campus at Varye, Satara.", "dbatu,c360sat,c360cs");
+c("Phaltan Education Society’s College of Engineering", "Phaltan", "Satara", "Maharashtra", "Private", "CS", 4, 0.8, 1.3, "est", "MHT-CET (CAP)", 1, "In Phaltan taluka, Satara district; BE Computer Engineering listed.", "dbatu,c360sat");
+c("Shivsamarth Institute of Management", "Satara", "Satara", "Maharashtra", "Private", "BA", 4, 0.5, 1.0, "est", "MAH-MBA-CET", 1, "MBA institute in Satara listed among MAH-MBA-CET colleges.", "c360mba");
+c("Karmaveer Bhaurao Patil University", "Satara", "Satara", "Maharashtra", "Private university", "BT", 4, 0.5, 1.2, "est", "University admission process (verify)", 1, "Listed among Maharashtra universities offering biotechnology.", "c360bio");
+c("Yashavantrao Chavan Institute of Science", "Satara", "Satara", "Maharashtra", "Affiliated college", "BT", 4, 0.1, 0.5, "est", "Merit-based (verify)", 1, "B.Sc-level biotechnology; listed among Maharashtra biotechnology colleges.", "c360bio2");
+/* ---- Karad (Satara district) ---- */
+c("Government College of Engineering, Karad", "Karad", "Satara", "Maharashtra", "Government autonomous", "ME,EL", 3, 0.88, 0.88, "reported", "MHT-CET (CAP) · JEE Main (all-India seats)", 1, "Autonomous government institute, est. 1960. Programmes include Civil, Mechanical, Electrical and E&TC. Aggregators show cutoff percentiles that vary widely by branch, category and year (roughly 68–96), so check the CAP closing lists. No B.E. Computer Science branch was found in the sources checked.", "gcek,gcekfee", 78);
+c("Krishna Vishwa Vidyapeeth", "Karad", "Satara", "Maharashtra", "Deemed university", "BT", 3, 0.8, 2.0, "est", "University entrance / merit (verify)", 1, "Deemed university at Karad listed for biotechnology programmes.", "c360bio");
+c("Jaywant Institute of Management", "Karad", "Satara", "Maharashtra", "Private", "BA", 4, 0.5, 1.0, "est", "MAH-MBA-CET", 1, "MBA institute in Karad.", "c360mba");
+c("Swaraj Institute of Management", "Karad", "Satara", "Maharashtra", "Private", "BA", 4, 0.5, 1.0, "est", "MAH-MBA-CET", 1, "MBA institute in Karad.", "c360mba");
+c("Yashwantrao Mohite Institute of Management", "Karad", "Satara", "Maharashtra", "Private", "BA", 4, 0.5, 1.0, "est", "MAH-MBA-CET", 1, "MBA institute in Karad.", "c360mba");
+/* ---- Kolhapur district ---- */
+c("KIT’s College of Engineering (Autonomous)", "Kolhapur", "Kolhapur", "Maharashtra", "Private autonomous", "CS,ME,EL,BT", 3, 0.98, 0.98, "official", "MHT-CET (CAP) · JEE Main", 1, "First-year B.Tech 2025-26: tuition ₹84,348 + development ₹12,652 + university ₹750 = ₹97,750 for the open CAP category. Institute-level / management seats can be up to ₹2.92 L — confirm your category.", "kitfee,c360kol");
+c("DKTE Society’s Textile and Engineering Institute", "Ichalkaranji", "Kolhapur", "Maharashtra", "Private", "CS,ME", 3, 0.9, 1.5, "est", "MHT-CET (CAP) · JEE Main", 0, "Listed first among Kolhapur-district B.E./B.Tech colleges.", "c360kol");
+c("D.Y. Patil College of Engineering and Technology", "Kolhapur", "Kolhapur", "Maharashtra", "Private", "CS,ME", 3, 0.9, 1.6, "est", "MHT-CET (CAP) · JEE Main", 0, "Listed among Kolhapur engineering colleges.", "c360kol");
+c("Bharati Vidyapeeth’s College of Engineering, Kolhapur", "Kolhapur", "Kolhapur", "Maharashtra", "Private", "CS,EL", 4, 0.9, 1.5, "est", "MHT-CET (CAP) · JEE Main", 1, "Appears in Careers360’s Kolhapur Computer Science and Electronics lists.", "c360kol");
+c("Sanjay Ghodawat University", "Atigre", "Kolhapur", "Maharashtra", "Private university", "CS,EL,BT", 3, 1.2, 2.2, "est", "MHT-CET · JEE Main · university test (verify)", 1, "Appears in Careers360’s Kolhapur CS and Electronics lists and among biotechnology universities.", "c360kol,c360bio");
+c("Dr. D.Y. Patil Pratishthan’s College of Engineering", "Salokhenagar", "Kolhapur", "Maharashtra", "Private", "ME", 4, 0.9, 1.5, "est", "MHT-CET (CAP)", 1, "Listed with a BE Mechanical programme (plus a lateral-entry Data Science B.Tech).", "c360kol");
+c("Tatyasaheb Kore Institute of Engineering and Technology", "Warananagar", "Kolhapur", "Maharashtra", "Private", "BT", 4, 0.9, 1.4, "est", "MHT-CET (CAP)", 1, "Named among Kolhapur-district B.Tech biotechnology colleges.", "c360bio2");
+c("Shivaji University", "Kolhapur", "Kolhapur", "Maharashtra", "State university", "BT,BA", 3, 0.1, 0.8, "est", "University entrance · MAH-MBA-CET (MBA)", 1, "State university; biotechnology and management programmes are listed.", "c360bio,c360mba");
+c("KIT’s Institute of Management Education and Research", "Kolhapur", "Kolhapur", "Maharashtra", "Private", "BA", 3, 0.7, 1.2, "est", "MAH-MBA-CET", 1, "MBA institute in Kolhapur.", "c360mba");
+c("Bharati Vidyapeeth Institute of Management, Kolhapur", "Kolhapur", "Kolhapur", "Maharashtra", "Private", "BA", 4, 0.6, 1.1, "est", "MAH-MBA-CET (verify)", 1, "Management institute in Kolhapur.", "c360mba");
+/* ---- Sangli (near Satara / Kolhapur) ---- */
+c("Walchand College of Engineering", "Sangli", "Sangli", "Maharashtra", "Govt-aided autonomous", "CS,ME,EL", 2, 0.9, 1.5, "est", "MHT-CET (CAP)", 0, "Well-known government-aided autonomous college; branch list not re-checked here.", "");
+/* ---- Pune district ---- */
+c("COEP Technological University", "Pune", "Pune", "Maharashtra", "Government (technological university)", "CS,ME,EL", 1, 1.42, 1.42, "reported", "MHT-CET (CAP) · JEE Main", 1, "NIRF 2025 engineering rank 77 (per Careers360). Aggregator-reported first-year fee ≈ ₹1.42 L; verify on the university fee notice.", "mhtop,c360rank,coepfee");
+c("Pune Institute of Computer Technology", "Pune", "Pune", "Maharashtra", "Private", "CS,EL", 2, 1.2, 2.0, "est", "MHT-CET (CAP) · JEE Main", 0, "Commonly cited among the strongest Computer/IT colleges in Maharashtra.", "mhtop");
+c("Vishwakarma Institute of Technology", "Pune", "Pune", "Maharashtra", "Private autonomous", "CS,ME,EL,BT", 2, 1.4, 2.2, "est", "MHT-CET (CAP) · JEE Main", 0, "Named among Maharashtra’s top engineering colleges and among biotechnology colleges.", "c360rank");
+c("Pimpri Chinchwad College of Engineering", "Pune", "Pune", "Maharashtra", "Private autonomous", "CS,ME,EL,BT", 2, 1.3, 2.0, "est", "MHT-CET (CAP) · JEE Main", 0, "NIRF-ranked; B.Tech Biotechnology is offered.", "c360bio2");
+c("Cummins College of Engineering for Women", "Pune", "Pune", "Maharashtra", "Private", "CS,ME,EL", 2, 1.2, 1.8, "est", "MHT-CET (CAP) · JEE Main", 0, "Women-only college; confirm branch list.", "mhtop");
+c("MIT World Peace University", "Pune", "Pune", "Maharashtra", "Private university", "CS,ME,BT", 2, 2.5, 4.0, "est", "MIT-WPU CET · MHT-CET · JEE Main", 1, "Named in Careers360’s Maharashtra top-10 engineering list; biotechnology also listed.", "c360rank,c360bio");
+c("Symbiosis Institute of Technology", "Pune", "Pune", "Maharashtra", "Deemed university", "CS,ME,EL", 2, 3.0, 4.5, "est", "SIT-SET · JEE Main", 0, "Symbiosis International University.", "");
+c("Symbiosis Institute of Business Management (SIBM Pune)", "Pune", "Pune", "Maharashtra", "Deemed university", "BA", 1, 4.0, 6.0, "est", "SNAP", 0, "Top-tier private MBA programme.", "");
+c("Symbiosis School of Biological Sciences", "Pune", "Pune", "Maharashtra", "Deemed university", "BT", 2, 1.5, 3.0, "est", "SET · merit (verify)", 1, "Listed among Maharashtra biotechnology colleges.", "c360bio2");
+c("SPPU Department of Management Sciences (PUMBA)", "Pune", "Pune", "Maharashtra", "State university", "BA", 2, 0.8, 2.0, "est", "MAH-MBA-CET", 1, "Savitribai Phule Pune University’s MBA department.", "");
+c("Dr. D.Y. Patil Biotechnology & Bioinformatics Institute", "Pune", "Pune", "Maharashtra", "Private", "BT", 3, 1.0, 2.0, "est", "MHT-CET · merit (verify)", 1, "Named among reputed biotechnology colleges in Maharashtra.", "");
+c("Sinhgad College of Engineering", "Pune", "Pune", "Maharashtra", "Private", "CS,ME,BT", 3, 1.0, 1.6, "est", "MHT-CET (CAP) · JEE Main", 1, "Named among Maharashtra B.Tech biotechnology colleges.", "c360bio2");
+/* ---- Mumbai ---- */
+c("IIT Bombay", "Mumbai", "Mumbai", "Maharashtra", "Central institute (IIT)", "CS,ME,EL", 1, 2.2, 3.0, "est", "JEE Advanced (via JoSAA)", 1, "NIRF engineering rank 3. Electronics = Electrical Engineering and related branches.", "c360rank");
+c("SJM School of Management, IIT Bombay", "Mumbai", "Mumbai", "Maharashtra", "Central institute (IIT)", "BA", 1, 3.5, 5.5, "est", "CAT", 0, "IIT Bombay’s management school.", "");
+c("Veermata Jijabai Technological Institute (VJTI)", "Mumbai", "Mumbai", "Maharashtra", "Government autonomous", "CS,ME,EL", 1, 0.86, 1.6, "reported", "MHT-CET (CAP) · JEE Main", 1, "State government autonomous institute; frequently named a top choice for Computer and Mechanical in Maharashtra. Aggregator fee figures vary by branch and category.", "mhtop,c360rank");
+c("Institute of Chemical Technology (ICT)", "Mumbai", "Mumbai", "Maharashtra", "Government (deemed university)", "BT", 1, 1.0, 2.0, "est", "MHT-CET (CAP) · JEE Main", 1, "NIRF 2025 engineering rank 41; biotechnology offered — check whether the level is B.Tech, M.Sc or M.Tech.", "c360rank,c360bio");
+c("Sardar Patel Institute of Technology", "Mumbai", "Mumbai", "Maharashtra", "Private aided autonomous", "CS,EL", 2, 1.5, 2.5, "est", "MHT-CET (CAP) · JEE Main", 0, "Frequently named among top Mumbai engineering colleges.", "mhtop");
+c("K. J. Somaiya College of Engineering", "Mumbai", "Mumbai", "Maharashtra", "Private autonomous", "CS,ME,EL", 2, 2.0, 3.0, "est", "MHT-CET (CAP) · JEE Main", 0, "Named in Maharashtra’s top B.Tech lists.", "mhtop");
+c("Dwarkadas J. Sanghvi College of Engineering", "Mumbai", "Mumbai", "Maharashtra", "Private autonomous", "CS,ME,EL", 2, 2.0, 3.0, "est", "MHT-CET (CAP) · JEE Main", 0, "Named in Maharashtra’s top B.Tech lists.", "mhtop");
+c("NMIMS Mumbai", "Mumbai", "Mumbai", "Maharashtra", "Deemed university", "CS,ME,EL,BA", 2, 2.5, 4.5, "est", "NPAT · JEE Main · CAT/NMAT (MBA)", 0, "Engineering (MPSTME) and management schools.", "c360rank");
+c("Jamnalal Bajaj Institute of Management Studies (JBIMS)", "Mumbai", "Mumbai", "Maharashtra", "Government autonomous", "BA", 1, 1.5, 3.5, "est", "MAH-MBA-CET · CAT", 0, "University of Mumbai’s flagship management institute.", "");
+c("S.P. Jain Institute of Management and Research", "Mumbai", "Mumbai", "Maharashtra", "Private", "BA", 1, 8.0, 12.0, "est", "CAT · GMAT", 0, "Top-tier PGDM programme.", "");
+c("Xavier Institute of Management and Research", "Mumbai", "Mumbai", "Maharashtra", "Private", "BA", 3, 1.5, 2.5, "est", "MAH-MBA-CET", 1, "Listed among MAH-MBA-CET colleges in Mumbai.", "c360mba");
+c("St. Xavier’s College, Mumbai", "Mumbai", "Mumbai", "Maharashtra", "Autonomous aided college", "BT", 2, 0.2, 0.8, "est", "College merit / entrance (verify)", 1, "B.Sc-level biotechnology; listed among Maharashtra biotechnology colleges.", "c360bio2");
+c("The Institute of Science, Mumbai", "Mumbai", "Mumbai", "Maharashtra", "Government college", "BT", 2, 0.1, 0.5, "est", "College merit / entrance (verify)", 1, "Listed among Mumbai biotechnology colleges.", "c360bio2");
+/* ---- Nagpur / Nashik ---- */
+c("Visvesvaraya National Institute of Technology (VNIT)", "Nagpur", "Nagpur", "Maharashtra", "Central institute (NIT)", "CS,ME,EL", 1, 1.3, 1.9, "est", "JEE Main (via JoSAA)", 1, "Ranked among Maharashtra’s top NIRF engineering institutes (per Careers360; sources differ on the exact rank).", "c360rank");
+c("Shri Ramdeobaba College of Engineering and Management", "Nagpur", "Nagpur", "Maharashtra", "Private autonomous", "CS,ME,EL", 3, 1.0, 1.8, "est", "MHT-CET (CAP) · JEE Main", 1, "Named among the best Maharashtra colleges without JEE.", "c360rank");
+c("K. K. Wagh Institute of Engineering Education and Research", "Nashik", "Nashik", "Maharashtra", "Private autonomous", "CS,ME,EL", 3, 1.0, 1.8, "est", "MHT-CET (CAP) · JEE Main", 0, "Well-known Nashik engineering college.", "");
+
+/* ---- Karnataka ---- */
+c("RV College of Engineering", "Bengaluru", "Bengaluru Urban", "Karnataka", "Private autonomous", "CS,ME,EL,BT", 2, 1.8, 3.5, "est", "KCET · COMEDK · JEE Main", 0, "", "");
+c("BMS College of Engineering", "Bengaluru", "Bengaluru Urban", "Karnataka", "Private autonomous", "CS,ME,EL,BT", 2, 1.8, 3.5, "est", "KCET · COMEDK · JEE Main", 0, "", "");
+c("PES University", "Bengaluru", "Bengaluru Urban", "Karnataka", "Private university", "CS,ME,EL,BT,BA", 2, 2.5, 4.5, "est", "PESSAT · KCET · JEE Main", 0, "", "");
+c("National Institute of Technology Karnataka (NITK)", "Surathkal", "Dakshina Kannada", "Karnataka", "Central institute (NIT)", "CS,ME,EL", 1, 1.2, 1.9, "est", "JEE Main (via JoSAA)", 0, "", "");
+c("Siddaganga Institute of Technology", "Tumakuru", "Tumakuru", "Karnataka", "Private aided autonomous", "CS,ME,EL", 3, 0.8, 1.6, "est", "KCET · COMEDK", 0, "", "");
+c("JSS Science and Technology University", "Mysuru", "Mysuru", "Karnataka", "State university", "CS,ME,EL,BT", 3, 0.7, 1.5, "est", "KCET · COMEDK", 0, "", "");
+c("Indian Institute of Management Bangalore", "Bengaluru", "Bengaluru Urban", "Karnataka", "Central institute (IIM)", "BA", 1, 11.0, 14.0, "est", "CAT", 0, "", "");
+c("Christ University", "Bengaluru", "Bengaluru Urban", "Karnataka", "Deemed university", "BA,CS", 3, 1.5, 3.0, "est", "Christ University entrance · CAT/CMAT (MBA)", 0, "", "");
+
+/* ---- Delhi NCR ---- */
+c("Indian Institute of Technology Delhi", "New Delhi", "New Delhi", "Delhi NCR", "Central institute (IIT)", "CS,ME,EL", 1, 2.2, 3.0, "est", "JEE Advanced (via JoSAA)", 0, "", "");
+c("Delhi Technological University", "New Delhi", "New Delhi", "Delhi NCR", "State university", "CS,ME,EL,BT,BA", 1, 1.7, 2.4, "est", "JEE Main (JAC Delhi) · CAT (MBA)", 0, "", "");
+c("Netaji Subhas University of Technology", "New Delhi", "New Delhi", "Delhi NCR", "State university", "CS,ME,EL", 1, 1.5, 2.4, "est", "JEE Main (JAC Delhi)", 0, "", "");
+c("Indraprastha Institute of Information Technology Delhi", "New Delhi", "New Delhi", "Delhi NCR", "State university", "CS,EL", 1, 3.0, 4.5, "est", "JEE Main (own counselling)", 0, "", "");
+c("Faculty of Management Studies, University of Delhi", "New Delhi", "New Delhi", "Delhi NCR", "Central university", "BA", 1, 1.0, 2.5, "est", "CAT", 0, "", "");
+c("Indian Institute of Foreign Trade", "New Delhi", "New Delhi", "Delhi NCR", "Deemed university", "BA", 1, 8.0, 10.0, "est", "IIFT exam / CAT", 0, "", "");
+c("Jamia Millia Islamia", "New Delhi", "New Delhi", "Delhi NCR", "Central university", "CS,ME,EL", 2, 0.2, 0.8, "est", "JMI entrance · JEE Main", 0, "", "");
+c("Amity University", "Noida", "Gautam Buddh Nagar", "Delhi NCR", "Private university", "CS,ME,EL,BT,BA", 3, 2.0, 3.5, "est", "JEE Main · Amity JEE · CAT (MBA)", 0, "", "");
+
+/* ---- Tamil Nadu ---- */
+c("Indian Institute of Technology Madras", "Chennai", "Chennai", "Tamil Nadu", "Central institute (IIT)", "CS,ME,EL,BT", 1, 2.2, 3.0, "est", "JEE Advanced (via JoSAA)", 0, "", "");
+c("College of Engineering Guindy, Anna University", "Chennai", "Chennai", "Tamil Nadu", "State university", "CS,ME,EL", 2, 0.3, 0.9, "est", "TNEA", 0, "", "");
+c("PSG College of Technology", "Coimbatore", "Coimbatore", "Tamil Nadu", "Private aided autonomous", "CS,ME,EL,BT", 2, 1.0, 2.0, "est", "TNEA · PSG entrance", 0, "", "");
+c("SSN College of Engineering", "Kalavakkam", "Chengalpattu", "Tamil Nadu", "Private autonomous", "CS,ME,EL", 2, 1.8, 3.0, "est", "TNEA · SSN entrance", 0, "", "");
+c("National Institute of Technology Tiruchirappalli", "Tiruchirappalli", "Tiruchirappalli", "Tamil Nadu", "Central institute (NIT)", "CS,ME,EL", 1, 1.3, 1.9, "est", "JEE Main (via JoSAA)", 0, "", "");
+c("Vellore Institute of Technology", "Vellore", "Vellore", "Tamil Nadu", "Deemed university", "CS,ME,EL,BT", 2, 1.8, 3.2, "est", "VITEEE", 0, "", "");
+c("SRM Institute of Science and Technology", "Kattankulathur", "Chengalpattu", "Tamil Nadu", "Deemed university", "CS,ME,EL,BT,BA", 3, 2.5, 4.5, "est", "SRMJEEE · JEE Main", 0, "", "");
+c("Thiagarajar College of Engineering", "Madurai", "Madurai", "Tamil Nadu", "Private aided autonomous", "CS,ME,EL", 3, 0.8, 1.8, "est", "TNEA", 0, "", "");
+c("Indian Institute of Management Tiruchirappalli", "Tiruchirappalli", "Tiruchirappalli", "Tamil Nadu", "Central institute (IIM)", "BA", 1, 8.0, 11.0, "est", "CAT", 0, "", "");
+c("Loyola Institute of Business Administration", "Chennai", "Chennai", "Tamil Nadu", "Private", "BA", 2, 4.0, 7.0, "est", "CAT · XAT", 0, "", "");
+
+/* ---- Gujarat ---- */
+c("Indian Institute of Technology Gandhinagar", "Gandhinagar", "Gandhinagar", "Gujarat", "Central institute (IIT)", "CS,ME,EL", 1, 2.2, 3.0, "est", "JEE Advanced (via JoSAA)", 0, "", "");
+c("Dhirubhai Ambani Institute of Information and Communication Technology", "Gandhinagar", "Gandhinagar", "Gujarat", "Private university", "CS,EL", 2, 2.5, 3.6, "est", "JEE Main · DA-IICT admission", 0, "", "");
+c("Sardar Vallabhbhai National Institute of Technology", "Surat", "Surat", "Gujarat", "Central institute (NIT)", "CS,ME,EL", 1, 1.3, 1.9, "est", "JEE Main (via JoSAA)", 0, "", "");
+c("Nirma University", "Ahmedabad", "Ahmedabad", "Gujarat", "Private university", "CS,ME,EL,BA,BT", 3, 2.0, 3.2, "est", "JEE Main · GUJCET · CAT/CMAT (MBA)", 0, "", "");
+c("L. D. College of Engineering", "Ahmedabad", "Ahmedabad", "Gujarat", "Government", "CS,ME,EL", 3, 0.3, 0.9, "est", "GUJCET · JEE Main (ACPC)", 0, "", "");
+c("Pandit Deendayal Energy University", "Gandhinagar", "Gandhinagar", "Gujarat", "Private university", "CS,ME,EL", 3, 2.0, 3.2, "est", "JEE Main · PDEU admission", 0, "", "");
+c("Indian Institute of Management Ahmedabad", "Ahmedabad", "Ahmedabad", "Gujarat", "Central institute (IIM)", "BA", 1, 11.0, 14.0, "est", "CAT", 0, "", "");
+c("MICA", "Ahmedabad", "Ahmedabad", "Gujarat", "Private", "BA", 2, 8.0, 11.0, "est", "CAT · MICAT", 0, "", "");
+c("The Maharaja Sayajirao University of Baroda", "Vadodara", "Vadodara", "Gujarat", "State university", "CS,ME,EL,BT,BA", 3, 0.2, 0.9, "est", "GUJCET · university merit", 0, "", "");
+c("Gujarat Biotechnology University", "Gandhinagar", "Gandhinagar", "Gujarat", "State university", "BT", 3, 0.5, 1.5, "est", "University admission (verify)", 0, "", "");
+
+const TYPE = { g: "Government", gu: "Government autonomous", ga: "Govt-aided autonomous", u: "University department", pa: "Private autonomous", p: "Private" };
+const FEE = { g1: [0.8, 1.6], g2: [0.8, 1.4], g3: [0.5, 1.1], g4: [0.5, 1.1], p1: [2, 3.5], p2: [1.4, 2.6], p3: [1.1, 2], p4: [0.8, 1.5] };
+`
+01002|Government College of Engineering, Amravati|Amravati|Amravati|gu2|CE,CS,IT,EE,EL,IN,ME
+01105|Prof. Ram Meghe Institute of Technology & Research|Badnera|Amravati|pa3|CE,CS,IT,AI,EL,ME
+01107|P. R. Pote Patil College of Engineering & Management|Amravati|Amravati|pa4|CE,CS,EE,EL,ME,AI
+01114|Sipna College of Engineering & Technology|Amravati|Amravati|pa3|CE,CS,IT,AI,EL,ME
+01121|Shri Hanuman Vyayam Prasarak Mandal's College of Engineering & Technology|Amravati|Amravati|pa4|CS,IT,EL,ME
+01123|Dr. Rajendra Gode Institute of Technology & Research|Amravati|Amravati|pa4|CE,CS,EL,ME,AI
+01128|Prof. Ram Meghe College of Engineering and Management|Badnera|Amravati|pa4|
+01116|Shri Shivaji Education Society's College of Engineering and Technology|Akola|Akola|p4|
+01276|Manav School of Engineering & Technology|Balapur|Akola|p4|
+01101|Shri Sant Gajanan Maharaj College of Engineering|Shegaon|Buldhana|pa3|CS,IT,EE,EL,ME
+01182|Padmashri Dr. V.B. Kolte College of Engineering|Malkapur|Buldhana|pa4|CE,CS,EE,ME
+01119|Anuradha College of Engineering & Technology|Chikhli|Buldhana|pa4|CS,IT,EL,CH,ME,AI
+01125|Rajarshi Shahu College of Engineering|Buldhana|Buldhana|p4|
+01130|Pankaj Laddhad Institute of Technology & Management Studies|Yelgaon|Buldhana|p4|
+01012|Government College of Engineering, Yavatmal|Yavatmal|Yavatmal|g4|
+01120|Jawaharlal Darda Institute of Engineering and Technology|Yavatmal|Yavatmal|pa4|CE,CS,EE,EL,CH,ME,TX
+01127|Jagdambha College of Engineering and Technology|Yavatmal|Yavatmal|pa4|CE,CS,EE,EL,ME,AI
+01117|Babasaheb Naik College of Engineering|Pusad|Yavatmal|p4|
+01180|Sanmati Engineering College|Washim|Washim|p4|
+04118|Bapurao Deshmukh College of Engineering|Sevagram|Wardha|p4|
+04649|Bajaj Institute of Technology|Wardha|Wardha|p4|
+04648|R.V. Parankar College of Engineering & Technology|Arvi|Wardha|p4|
+02008|Government College of Engineering, Chhatrapati Sambhajinagar|Chhatrapati Sambhajinagar|Chhatrapati Sambhajinagar|gu2|CE,CS,IT,EE,EL,ME
+02113|G. S. Mandal's Maharashtra Institute of Technology|Chhatrapati Sambhajinagar|Chhatrapati Sambhajinagar|pa3|AG,CE,CS,AI,EE,EL,PL,ME,MC
+02114|Deogiri Institute of Engineering and Management Studies|Chhatrapati Sambhajinagar|Chhatrapati Sambhajinagar|pa3|CE,CS,AI,EE,EL,ME
+02134|Peoples Education Society's College of Engineering|Chhatrapati Sambhajinagar|Chhatrapati Sambhajinagar|pa4|CE,CS,EE,EL,ME
+02112|Shreeyash College of Engineering and Technology|Chhatrapati Sambhajinagar|Chhatrapati Sambhajinagar|pa4|
+02533|CSMSS Chh. Shahu College of Engineering|Chhatrapati Sambhajinagar|Chhatrapati Sambhajinagar|p4|
+02021|University Department of Chemical Technology (Dr. BAMU)|Chhatrapati Sambhajinagar|Chhatrapati Sambhajinagar|u3|CH
+02032|ICT Mumbai — Marathwada Off-Campus|Jalna|Jalna|u2|CH
+02138|Matsyodari Shikshan Sanstha's College of Engineering and Technology|Jalna|Jalna|p4|
+02136|Aditya Engineering College|Beed|Beed|p4|
+02133|Mahatma Basaweshwar Education Society's College of Engineering|Ambejogai|Beed|p4|
+02015|Puranmal Lahoti Government Institute of Engineering and Technology|Latur|Latur|g4|
+02129|M.S. Bidve Engineering College|Latur|Latur|p4|
+02254|Vilasrao Deshmukh Foundation Group of Institutions|Latur|Latur|p4|
+02020|Shri Guru Gobind Singhji Institute of Engineering and Technology|Nanded|Nanded|ga2|CE,CS,IT,EE,EL,IN,CH,PR,ME,TX
+02127|Mahatma Gandhi Mission's College of Engineering|Nanded|Nanded|pa4|
+02508|Gramin Technical and Management Campus|Nanded|Nanded|p4|
+02252|Shri Shivaji Institute of Engineering and Management Studies|Parbhani|Parbhani|p4|
+02130|Terna Public Charitable Trust's College of Engineering|Dharashiv|Dharashiv|p4|
+02131|Shree Tuljabhavani College of Engineering|Tuljapur|Dharashiv|p4|
+05103|Late Bapusaheb Shivajirao Deore College of Engineering|Dhule|Dhule|p4|
+05172|R. C. Patel Institute of Technology|Shirpur|Dhule|pa3|
+05545|SVKM's College of Engineering|Shirpur|Dhule|p4|
+05004|Government College of Engineering, Jalgaon|Jalgaon|Jalgaon|gu3|
+05003|University Institute of Chemical Technology (KBC North Maharashtra University)|Jalgaon|Jalgaon|u3|CH
+05152|G H Raisoni College of Engineering and Management|Jalgaon|Jalgaon|pa4|
+05171|Godavari College of Engineering|Jalgaon|Jalgaon|pa4|
+05170|Shri Sant Gadgebaba College of Engineering & Technology|Bhusawal|Jalgaon|pa4|
+05164|D.N. Patel College of Engineering|Shahada|Nandurbar|p4|
+05497|P.G. College of Engineering & Technology|Nandurbar|Nandurbar|p4|
+05108|Karmaveer Adv. Baburao Ganpatrao Thakare College of Engineering|Nashik|Nashik|pa3|
+05109|Sandip Institute of Technology and Research Centre|Nashik|Nashik|pa4|
+05173|SNJB's K.B. Jain College of Engineering|Chandwad|Nashik|pa4|
+05151|MET's Bhujbal Knowledge City Engineering College|Nashik|Nashik|p4|
+05330|PVG's College of Engineering & S.S. Dhamankar Institute of Management|Nashik|Nashik|pa4|
+05139|Pravara Rural College of Engineering|Loni|Ahilyanagar|pa3|
+05162|Amrutvahini College of Engineering|Sangamner|Ahilyanagar|pa3|
+05160|Sanjivani College of Engineering|Kopargaon|Ahilyanagar|pa3|
+05161|Dr. Vithalrao Vikhe Patil College of Engineering|Ahilyanagar|Ahilyanagar|p4|
+05380|Adsul's Technical Campus|Chas|Ahilyanagar|p4|
+06004|Government College of Engineering & Research, Avasari Khurd|Avasari Khurd|Pune|g3|
+06139|Modern College of Engineering|Pune|Pune|pa3|
+06146|MIT Academy of Engineering|Alandi|Pune|pa3|
+06145|JSPM's Jaywantrao Sawant College of Engineering|Hadapsar|Pune|pa3|
+06141|JSPM's Rajarshi Shahu College of Engineering|Tathawade|Pune|pa3|
+06156|Marathwada Mitra Mandal's College of Engineering|Karvenagar|Pune|pa3|
+06178|Smt. Kashibai Navale College of Engineering|Vadgaon|Pune|p3|
+06207|Dr. D. Y. Patil Institute of Technology|Pimpri|Pune|p3|
+06272|D. Y. Patil College of Engineering|Akurdi|Pune|pa3|
+06278|AISSMS College of Engineering|Pune|Pune|pa3|
+06281|Wadia College of Engineering|Pune|Pune|pa3|
+06284|Kamalnayan Bajaj Institute of Engineering & Technology|Baramati|Pune|pa3|
+06274|PVG's College of Engineering, Technology & Management|Pune|Pune|pa3|
+06310|Nutan Maharashtra Institute of Engineering & Technology|Talegaon|Pune|pa4|
+06155|G.H. Raisoni College of Engineering & Management|Wagholi|Pune|pa4|
+06796|Bharati Vidyapeeth's College of Engineering|Lavale|Pune|p4|
+06265|Walchand Institute of Technology|Solapur|Solapur|pa3|
+06220|SVERI's College of Engineering|Pandharpur|Solapur|pa3|
+06223|Nagesh Karajagi Orchid College of Engineering & Technology|Solapur|Solapur|pa4|
+06308|A.G. Patil Institute of Technology|Solapur|Solapur|pa4|
+06782|Sahakar Maharshee Shankarrao Mohite Patil Institute of Technology & Research|Akluj|Solapur|p4|
+06214|Rajarambapu Institute of Technology|Walwa|Sangli|pa3|
+06283|Annasaheb Dange College of Engineering and Technology|Ashta|Sangli|pa3|
+06269|Pad. Vasantraodada Patil Institute of Technology|Budhgaon|Sangli|pa4|
+06304|Adarsh Institute of Technology and Research Centre|Vita|Sangli|pa4|
+06644|Sanjay Bhokare Group of Institutes|Miraj|Sangli|pa4|
+06036|Government College of Engineering, Kolhapur|Kolhapur|Kolhapur|g3|
+06028|Shivaji University School of Engineering & Technology|Kolhapur|Kolhapur|u3|
+06277|Dr. J.J. Magdum College of Engineering|Jaysingpur|Kolhapur|pa4|
+06317|Sharad Institute of Technology College of Engineering|Yadrav|Kolhapur|pa4|
+06315|Sanjeevan Group of Institutions|Panhala|Kolhapur|pa4|
+06803|Sant Gajanan Maharaj College of Engineering|Gadhinglaj|Kolhapur|p4|
+06303|Dr. Daulatrao Aher College of Engineering|Karad|Satara|p4|
+06466|Shree Santkrupa Institute of Engineering & Technology|Karad|Satara|p4|
+06797|Dnyanshree Institute of Engineering and Technology|Satara|Satara|pa4|
+06305|N.B. Chhabada Institute of Engineering & Technology|Raigaon|Satara|pa4|
+03014|Sardar Patel College of Engineering|Andheri, Mumbai|Mumbai|ga1|CE,EE,ME
+03139|Vidyalankar Institute of Technology|Wadala, Mumbai|Mumbai|pa2|
+03182|Thadomal Shahani Engineering College|Bandra, Mumbai|Mumbai|p2|
+03184|Fr. Conceicao Rodrigues College of Engineering|Bandra, Mumbai|Mumbai|pa2|
+03185|Vivekanand Education Society's Institute of Technology|Chembur, Mumbai|Mumbai|pa2|
+03148|Shah & Anchor Kutchhi Engineering College|Chembur, Mumbai|Mumbai|pa3|
+03176|Thakur College of Engineering and Technology|Kandivali, Mumbai|Mumbai|pa3|
+03204|St. Francis Institute of Technology|Borivali, Mumbai|Mumbai|pa3|
+03203|Atharva College of Engineering|Malad, Mumbai|Mumbai|p3|
+03035|Usha Mittal Institute of Technology (SNDT Women's University)|Mumbai|Mumbai|u3|
+03183|Anjuman-I-Islam's M.H. Saboo Siddik College of Engineering|Byculla, Mumbai|Mumbai|p4|
+03190|Terna Engineering College|Nerul, Navi Mumbai|Thane|pa3|
+03196|Lokmanya Tilak College of Engineering|Koparkhairane|Thane|pa3|
+03197|Fr. C. Rodrigues Institute of Technology|Vashi|Thane|pa3|
+03211|S.I.E.S. Graduate School of Technology|Nerul|Thane|pa3|
+03475|A. P. Shah Institute of Technology|Thane|Thane|p3|
+03187|Datta Meghe College of Engineering|Airoli|Thane|p3|
+03193|Shivajirao S. Jondhale College of Engineering|Dombivli|Thane|p4|
+03033|Dr. Babasaheb Ambedkar Technological University|Lonere|Raigad|u3|
+03223|Pillai HOC College of Engineering & Technology|Rasayani|Raigad|pa3|
+03439|Anjuman-I-Islam's Kalsekar Technical Campus|Panvel|Raigad|pa3|
+03147|Yadavrao Tasgaonkar Institute of Engineering & Technology|Karjat|Raigad|p4|
+03194|Vidyavardhini's College of Engineering and Technology|Vasai|Palghar|pa3|
+03221|VIVA Institute of Technology|Virar|Palghar|pa3|
+03218|St. John College of Engineering & Management|Palghar|Palghar|pa4|
+03042|Loknete Shamrao Peje Government College of Engineering|Ratnagiri|Ratnagiri|g4|
+03200|Finolex Academy of Management and Technology|Ratnagiri|Ratnagiri|p4|
+03206|S.S.P.M.'s College of Engineering|Kankavli|Sindhudurg|p4|
+03440|Metropolitan Institute of Technology & Management|Sukhalwad|Sindhudurg|p4|
+04025|Government College of Engineering, Nagpur|Nagpur|Nagpur|g2|
+04167|Yeshwantrao Chavan College of Engineering|Nagpur|Nagpur|pa3|
+04116|G.H. Raisoni College of Engineering|Nagpur|Nagpur|pa3|
+04304|Cummins College of Engineering for Women|Nagpur|Nagpur|pa3|
+04123|Priyadarshini College of Engineering|Nagpur|Nagpur|pa4|
+04137|S. B. Jain Institute of Technology, Management & Research|Nagpur|Nagpur|pa4|
+04174|St. Vincent Pallotti College of Engineering & Technology|Nagpur|Nagpur|pa4|
+04143|Mandukarrao Pandav College of Engineering|Bhandara|Bhandara|pa4|
+04302|Manoharbhai Patel Institute of Engineering & Technology|Shahapur|Bhandara|p4|
+04004|Government College of Engineering, Chandrapur|Chandrapur|Chandrapur|g3|
+04163|Rajiv Gandhi College of Engineering Research & Technology|Chandrapur|Chandrapur|p4|
+04188|Ballarpur Institute of Technology|Ballarpur|Chandrapur|p4|
+04190|Shri Sai College of Engineering & Technology|Bhadrawati|Chandrapur|p4|
+`.trim().split("\n").forEach(l => {
+  const [code, name, city, district, tt, cs] = l.split("|"), ty = tt.replace(/\d/, ""), tier = +tt.replace(/\D/g, ""), grp = /^[gu]/.test(ty) ? "govt" : "private";
+  D.push({ id: D.length, name, city, district, state: "Maharashtra", type: TYPE[ty], courses: (cs || (tier < 4 ? "CS,IT,EL,EE,ME,CE" : "CS,EL,ME,CE")).split(","), tier,
+    fee: FEE[(grp === "govt" ? "g" : "p") + tier], basis: "est", exams: "MHT-CET (CAP) · JEE Main", checked: !!cs, note: "", src: ["capList"], req: TIER_REQ[tier], grp, code });
+});
+const A = (s, code, extra) => { const x = D.find(d => d.name.includes(s)); if (!x) return; if (code) x.code = code; if (extra) x.courses = [...new Set([...x.courses, ...extra.split(",")])]; };
+A("Government College of Engineering, Karad", "06005", "CE,EE"); A("KIT", "06267"); A("DKTE", "06222"); A("D.Y. Patil College of Engineering and Technology", "06250");
+A("Bharati Vidyapeeth", "06288"); A("Tatyasaheb Kore", "06268", "CS,ME,CE,EL"); A("Karmaveer Bhaurao Patil College", "06270"); A("Yashoda Technical", "06757"); A("Arvind Gavali", "06545");
+A("Phaltan", "06766"); A("Pune Institute of Computer", "06271"); A("Vishwakarma Institute", "06273"); A("Pimpri Chinchwad", "06175"); A("Cummins College of Engineering for Women", "06276");
+A("Sinhgad College of Engineering", "06177"); A("Veermata", "03012", "CE,IT,EE,PR,TX"); A("Sardar Patel Institute", "03215"); A("Dwarkadas", "03199"); A("Institute of Chemical Technology (ICT)", "03036", "CH,TX");
+A("Walchand College", "06007"); A("K. K. Wagh", "05121"); A("Visvesvaraya", "", "EE,CE,CH,MN,MT"); A("IIT Bombay", "", "CE,EE,CH,AE,MT"); A("COEP", "", "CE,EE,IN,PR,MT");
+Object.assign(SRC, {
+  capList: ["Official CAP 2026-27 list of institutes (State CET Cell, Maharashtra)", "https://fe2026.mahacet.org/StaticPages/frmInstituteList"],
+  capSeat: ["Official CAP seat matrix — branches per institute (PDF)", "https://cappublicdocs2026.blob.core.windows.net/documents/2026_fe_seatmatrix_V1.pdf"],
+  capCut: ["Official CAP Round IV state-level cut-offs (PDF)", "https://cappublicdocs2026.blob.core.windows.net/documents/2026ENGG_CAP4_MH_CutOff.pdf"],
+  fra: ["Fees approved by the Fee Regulating Authority, Maharashtra", "https://ay26-27.mahafraportal.org/ssi_prp_25/outer.php?q=fee_search_report"],
+  dbatuPdf: ["DBATU-affiliated engineering institutes with districts (PDF)", "https://dbatu.ac.in/wp-content/uploads/2021/11/Engineering-Institutes.pdf"]
+});
+/* END DATA */
+
+const STATES = [...new Set(D.map(x => x.state))];
+
+/* ============================= STATE / HELPERS ============================= */
+const $ = id => document.getElementById(id);
+const DEFAULTS = { marks: 88, budget: 150000, course: "CS", state: "Maharashtra", district: "Satara", city: "all", ctype: "any", wfit: 6, waff: 5, wstr: 3, wprox: 3 };
+let ui = { filter: "all", sort: "match", showLong: false, shown: 10, selected: new Set(), last: null };
+
+function profile() {
+  return {
+    marks: Math.max(0, Math.min(100, parseFloat($("marks").value) || 0)),
+    budget: Math.max(0, parseFloat($("budget").value) || 0),
+    course: $("course").value, state: $("state").value, district: $("district").value, city: $("city").value, ctype: $("ctype").value,
+    w: { fit: +$("w-fit").value, aff: +$("w-aff").value, str: +$("w-str").value, prox: +$("w-prox").value }
+  };
+}
+const lakh = n => n.toFixed(n < 1 ? 2 : 1);
+function fmtFee(x) { const [lo, hi] = x.fee; return lo === hi ? "₹" + lo.toFixed(2) + " L/yr" : "₹" + lakh(lo) + "–" + lakh(hi) + " L/yr"; }
+const courseName = k => COURSE[k];
+
+function evaluate(x, p) {
+  const req = Math.max(35, x.req + (COURSE_OFF[p.course] || 0));
+  const diff = p.marks - req;
+  const chance = diff >= 3 ? "safe" : diff >= -4 ? "target" : diff >= -12 ? "reach" : "long";
+  const fit = diff >= 0 ? Math.max(70, 100 - diff * 0.8) : Math.max(0, 100 + diff * 6);
+  const B = p.budget / 100000;
+  let aff;
+  if (x.fee[1] <= B) aff = 100;
+  else if (x.fee[0] <= B) aff = 65;
+  else aff = Math.max(0, 55 - ((x.fee[0] - B) / Math.max(B, 0.2)) * 60);
+  const str = TIER_STRENGTH[x.tier];
+  let prox, where;
+  const near = NEARBY[p.district] || [];
+  if (p.city !== "all" && x.city === p.city) { prox = 100; where = "In " + x.city; }
+  else if (p.district !== "all" && x.district === p.district) { prox = 90; where = "In " + x.district + " district"; }
+  else if (p.district !== "all" && near.includes(x.district)) { prox = 70; where = "Nearby: " + x.district + " district"; }
+  else if (p.state !== "all" && x.state === p.state) { prox = 55; where = "Elsewhere in " + x.state; }
+  else if (p.state === "all") { prox = 70; where = x.district + ", " + x.state; }
+  else { prox = 30; where = x.state; }
+  const w = p.w, sum = (w.fit + w.aff + w.str + w.prox) || 1;
+  const score = Math.round((fit * w.fit + aff * w.aff + str * w.str + prox * w.prox) / sum);
+  return { diff: Math.round(diff * 10) / 10, req, chance, fit: Math.round(fit), aff: Math.round(aff), str, prox, where, score: Math.max(0, Math.min(99, score)) };
+}
+
+function matchesType(x, p) { return p.ctype === "any" || x.grp === p.ctype; }
+
+function inScope(x, p, level) {
+  if (p.state !== "all" && x.state !== p.state) return false;
+  if (level === 0) { if (p.district !== "all" && x.district !== p.district) return false; if (p.city !== "all" && x.city !== p.city) return false; return true; }
+  if (level === 1) { return p.district === "all" || x.district === p.district; }
+  if (level === 2) { if (p.district === "all") return true; return [p.district, ...(NEARBY[p.district] || [])].includes(x.district); }
+  return true;
+}
+
+function getResults(p) {
+  const base = D.filter(x => x.courses.includes(p.course) && matchesType(x, p));
+  const placeLabel = p.city !== "all" ? p.city : p.district !== "all" ? p.district + " district" : p.state !== "all" ? p.state : "all states";
+  const notes = [];
+  let level = 0, list = [];
+  for (level = 0; level <= 3; level++) {
+    list = base.filter(x => inScope(x, p, level));
+    if (list.length) break;
+  }
+  if (level > 3) list = [];
+  const hasLoc = p.city !== "all" || p.district !== "all";
+  if (hasLoc && level > 0 && list.length) {
+    const cn = courseName(p.course);
+    if (level === 1) notes.push({ kind: "warn", html: "<strong>No verified " + cn + " college found in " + p.city + ".</strong> Showing the rest of " + p.district + " district instead." });
+    else if (level === 2) notes.push({ kind: "warn", html: "<strong>No verified " + cn + " college found in " + (p.city !== "all" ? p.city + " or " : "") + p.district + " district.</strong> Showing nearby districts (" + [p.district, ...(NEARBY[p.district] || [])].slice(1).join(", ") + ") in " + p.state + "." });
+    else notes.push({ kind: "warn", html: "<strong>No verified " + cn + " college found in or near " + p.district + ".</strong> Showing options across " + (p.state === "all" ? "all states" : p.state) + "." });
+  }
+  const evald = list.map(x => ({ x, ev: evaluate(x, p) }));
+  return { items: evald, level, placeLabel, notes };
+}
+
+function whyText(x, ev, p) {
+  const B = p.budget / 100000;
+  const a = ev.diff >= 0 ? "Your " + p.marks + " is " + ev.diff + " above" : "Your " + p.marks + " is " + Math.abs(ev.diff) + " below";
+  const f = x.fee[1] <= B ? "fees (" + fmtFee(x) + ") fit inside your ₹" + B.toFixed(2) + " L budget"
+    : x.fee[0] <= B ? "fees (" + fmtFee(x) + ") partly overlap your budget — confirm the exact category"
+    : "fees (" + fmtFee(x) + ") are above your ₹" + B.toFixed(2) + " L budget";
+  return a + " the indicative " + ev.req + " requirement (" + TIER_LABEL[x.tier].toLowerCase() + "); " + f + " [" + BASIS[x.basis].long + "].";
+}
+
+/* ============================= FORM WIRING ============================= */
+function fillSelect(sel, opts, value) {
+  sel.innerHTML = opts.map(o => '<option value="' + o.v + '">' + o.t + '</option>').join("");
+  sel.value = opts.some(o => o.v === value) ? value : opts[0].v;
+}
+function countFor(fn) { const cc = $("course").value; return D.filter(x => x.courses.includes(cc) && fn(x)).length; }
+
+function refreshPlaceSelects(keepDistrict, keepCity) {
+  const st = $("state").value;
+  const dists = [...new Set([...D.filter(x => st === "all" || x.state === st).map(x => x.district), ...(st === "all" || st === "Maharashtra" ? MH_DISTRICTS : [])])].sort();
+  const dOpts = [{ v: "all", t: "All districts" }].concat(dists.map(d => ({ v: d, t: (d === "Mumbai" ? "Mumbai (City & Suburban)" : d) + " (" + countFor(x => x.district === d && (st === "all" || x.state === st)) + ")" })));
+  fillSelect($("district"), dOpts, keepDistrict);
+  const dist = $("district").value;
+  const cities = [...new Set(D.filter(x => (st === "all" || x.state === st) && (dist === "all" || x.district === dist)).map(x => x.city))];
+  const cOpts = [{ v: "all", t: "All towns / cities" }].concat(cities.map(t => ({ v: t, t: t + " (" + countFor(x => x.city === t && (dist === "all" || x.district === dist) && (st === "all" || x.state === st)) + ")" })));
+  fillSelect($("city"), cOpts, keepCity);
+}
+
+function initForm() {
+  fillSelect($("course"), Object.entries(COURSE).map(([k, v]) => ({ v: k, t: v })), DEFAULTS.course);
+  fillSelect($("state"), [{ v: "all", t: "All states" }].concat(STATES.map(s => ({ v: s, t: s }))), DEFAULTS.state);
+  refreshPlaceSelects(DEFAULTS.district, DEFAULTS.city);
+  $("ctype").value = DEFAULTS.ctype;
+  document.getElementById("source-list").innerHTML = Object.values(SRC).map(s => '<li><a href="' + s[1] + '" target="_blank" rel="noopener noreferrer">' + s[0] + '</a></li>').join("");
+  $("tagline").textContent = D.length + " real institutions · " + STATES.length + " states";
+}
+
+function syncLabels() {
+  $("marks-v").textContent = ""; $("budget-v").textContent = "≈ ₹" + ($("budget").value / 100000).toFixed(2) + " L";
+  ["fit", "aff", "str", "prox"].forEach(k => $("w-" + k + "-v").textContent = $("w-" + k).value);
+}
+
+let debounce;
+function schedule() { clearTimeout(debounce); debounce = setTimeout(() => { ui.shown = 10; render(); }, 180); }
+
+/* ============================= RENDER ============================= */
+const RING = 2 * Math.PI * 24;
+
+function render() {
+  syncLabels();
+  const p = profile();
+  const res = getResults(p);
+  ui.last = { p, res };
+
+  // counts
+  const counts = { safe: 0, target: 0, reach: 0, long: 0 };
+  res.items.forEach(r => counts[r.ev.chance]++);
+  $("n-all").textContent = res.items.length - (ui.showLong ? 0 : counts.long);
+  $("n-safe").textContent = counts.safe; $("n-target").textContent = counts.target; $("n-reach").textContent = counts.reach;
+
+  // list
+  let list = res.items.filter(r => ui.showLong || r.ev.chance !== "long");
+  if (ui.filter !== "all") list = list.filter(r => r.ev.chance === ui.filter);
+  if (ui.inBudget) list = list.filter(r => r.x.fee[0] <= p.budget / 100000);
+  const s = ui.sort;
+  list.sort((a, b) => s === "fee-asc" ? (a.x.fee[0] + a.x.fee[1]) - (b.x.fee[0] + b.x.fee[1])
+    : s === "strength" ? (a.x.tier - b.x.tier) || (b.ev.score - a.ev.score)
+    : s === "name" ? a.x.name.localeCompare(b.x.name)
+    : b.ev.score - a.ev.score);
+
+  renderPicks(list, p);
+  $("results-title").textContent = courseName(p.course) + " colleges";
+  const hidden = res.items.length - list.length;
+  $("scope-line").textContent = list.length + " shown · " + res.placeLabel;
+
+  $("notices").innerHTML = res.notes.map(n => '<div class="notice">' + n.html + '</div>').join("") +
+    (!ui.showLong && counts.long ? '<div class="notice info">' + counts.long + ' long-shot ' + (counts.long === 1 ? 'college is' : 'colleges are') + ' hidden (more than 12 points above your score). Tick “Include long shots” to see ' + (counts.long === 1 ? 'it' : 'them') + '.</div>' : "");
+
+  const box = $("results");
+  box.innerHTML = "";
+  if (!list.length) {
+    box.innerHTML = '<div class="empty">No colleges match these filters. Try “All districts”, another college type, or a higher budget.</div>';
+    return;
+  }
+  list.slice(0, ui.shown).forEach((r, i) => box.appendChild(card(r, i, p)));
+  if (list.length > ui.shown) {
+    const b = document.createElement("button");
+    b.className = "more"; b.textContent = "Show " + Math.min(10, list.length - ui.shown) + " more (" + (list.length - ui.shown) + " remaining)";
+    b.onclick = () => { ui.shown += 10; render(); };
+    box.appendChild(b);
+  }
+}
+
+const BAND = { low: "Budget-friendly", mid: "Mid-range", premium: "Premium" };
+const bandOf = x => { const m = (x.fee[0] + x.fee[1]) / 2; return m < 1 ? "low" : m < 2.5 ? "mid" : "premium"; };
+function renderPicks(list, p) {
+  const best = {}; list.forEach(r => { const b = bandOf(r.x); if (!best[b] || r.ev.score > best[b].ev.score) best[b] = r; });
+  const ks = ["low", "mid", "premium"].filter(k => best[k]);
+  $("picks").innerHTML = ks.length > 1 ? '<div class="picks-h">Best pick at each budget level</div><div class="picks">' + ks.map(k => { const r = best[k];
+    return '<div class="pick"><span class="band ' + k + '">' + BAND[k] + '</span><div class="pn">' + r.x.name + '</div><div class="pm">' + r.x.city + ', ' + r.x.district + ' · ' + fmtFee(r.x) + ' · match ' + r.ev.score + '</div></div>'; }).join("") + '</div>' : "";
+}
+function card(r, i, p) {
+  const { x, ev } = r;
+  const tagLabel = { safe: "Likely", target: "Competitive", reach: "Reach", long: "Long shot" }[ev.chance];
+  const off = RING - (RING * ev.score / 100);
+  const el = document.createElement("div");
+  el.className = "card";
+  el.style.animationDelay = Math.min(i, 8) * 45 + "ms";
+  const cc = x.courses.map(k => COURSE[k]).join(" · ");
+  const verify = "https://www.google.com/search?q=" + encodeURIComponent(x.name + " " + x.city + " fees admission official site");
+  const srcLinks = x.src.map(k => '<a href="' + SRC[k][1] + '" target="_blank" rel="noopener noreferrer">' + SRC[k][0].split(" — ")[0] + '</a>').slice(0, 2).join(" · ");
+  const near = ev.where.startsWith("In " + (p.city !== "all" ? p.city : "\u0000")) || ev.where === "In " + p.district + " district" ? "" : ev.where.startsWith("In ") || p.state === "all" ? "" : '<div class="near-tag">' + ev.where + '</div>';
+  el.innerHTML =
+    '<div class="rank">' + (i + 1) + '</div>' +
+    '<div>' +
+      '<div class="name-row"><span class="name">' + x.name + '</span><span class="tag ' + ev.chance + '">' + tagLabel + '</span><span class="tag type">' + x.type + '</span></div>' +
+      '<div class="meta"><span>' + x.city + ', ' + x.district + ' · ' + x.state + '</span><span>' + cc + '</span></div>' +
+      near +
+      '<div class="fee-row"><span class="fee">' + fmtFee(x) + '</span><span class="basis ' + x.basis + '">' + BASIS[x.basis].short + '</span><span class="band ' + bandOf(x) + '">' + BAND[bandOf(x)] + '</span></div>' +
+      '<div class="exams">' + x.exams.split(" · ").map(e => '<span class="exam">' + e + '</span>').join("") + '<span class="exam">Needs ≈ ' + ev.req + '+ percentile (indicative)</span></div>' +
+      '<div class="verify-line">' + (x.checked ? '<span class="ok">✓ Branch listing cross-checked</span>' : '<span>Typical branches shown — confirm on the official page</span>') + '<a href="' + verify + '" target="_blank" rel="noopener noreferrer">Verify fees & seats ↗</a>' + (x.code ? '<a href="https://fe2026.mahacet.org/StaticPages/frmInstituteSummary.aspx?InstituteCode=' + x.code + '" target="_blank" rel="noopener noreferrer">Official CAP page ↗</a>' : '') + '</div>' +
+      '<button class="why-toggle" type="button">Why this score</button>' +
+      '<div class="why"><div>' + whyText(x, ev, p) + '</div>' +
+        '<div class="bars">' + bar("Admission fit", ev.fit) + bar("Affordability", ev.aff) + bar("Institute strength", ev.str) + bar("Closeness", ev.prox) + '</div>' +
+        (x.note ? '<div style="margin-top:10px;color:var(--text-muted)">' + x.note + '</div>' : "") +
+        (srcLinks ? '<div style="margin-top:8px;font-size:0.76rem;color:var(--text-muted)">Sources: ' + srcLinks + '</div>' : "") +
+      '</div>' +
+    '</div>' +
+    '<div class="side"><div class="ring"><svg width="56" height="56" viewBox="0 0 56 56"><circle class="track" cx="28" cy="28" r="24"></circle><circle class="fill ' + ev.chance + '" cx="28" cy="28" r="24" stroke-dasharray="' + RING + '" stroke-dashoffset="' + RING + '"></circle></svg><div class="lbl"><div class="num">' + ev.score + '</div><div class="cap">MATCH</div></div></div>' +
+    '<label class="cmp"><input type="checkbox" ' + (ui.selected.has(x.id) ? "checked" : "") + '> Compare</label></div>';
+  const t = el.querySelector(".why-toggle"), w = el.querySelector(".why");
+  t.onclick = () => { w.classList.toggle("open"); t.textContent = w.classList.contains("open") ? "Hide details" : "Why this score"; };
+  el.querySelector(".cmp input").onchange = e => { e.target.checked ? ui.selected.add(x.id) : ui.selected.delete(x.id); renderTray(); };
+  requestAnimationFrame(() => setTimeout(() => { el.querySelector(".fill").style.strokeDashoffset = off; }, 60 + Math.min(i, 8) * 45));
+  return el;
+}
+function bar(label, v) { return '<div class="bar-row"><span>' + label + '</span><div class="bar"><i style="width:' + v + '%"></i></div><span class="v">' + v + '</span></div>'; }
+
+/* ============================= COMPARE ============================= */
+function renderTray() {
+  const tray = $("tray");
+  if (!ui.selected.size) { tray.classList.remove("show"); return; }
+  tray.classList.add("show");
+  $("tray-chips").innerHTML = [...ui.selected].map(id => "<span>" + D[id].name + "</span>").join("");
+}
+$("open-cmp").onclick = () => {
+  const p = profile();
+  const items = [...ui.selected].map(id => D[id]);
+  if (!items.length) return;
+  const ev = items.map(x => evaluate(x, p));
+  const rows = [
+    ["Location", x => x.city + ", " + x.district + " · " + x.state, false],
+    ["Type", x => x.type, false],
+    ["Courses", x => x.courses.map(k => COURSE[k]).join(", "), false],
+    ["Fee / year", x => fmtFee(x) + " (" + BASIS[x.basis].short + ")", true],
+    ["Admission route", x => x.exams, false],
+    ["Indicative percentile", (x, e) => "≈ " + e.req + "+ (" + TIER_LABEL[x.tier] + ")", true],
+    ["Your chance", (x, e) => ({ safe: "Likely", target: "Competitive", reach: "Reach", long: "Long shot" })[e.chance], false],
+    ["Match score", (x, e) => e.score + " / 100", true],
+    ["Cross-checked", x => x.checked ? "Branch listing cross-checked" : "Not re-checked", false],
+    ["Notes", x => x.note || "—", false]
+  ];
+  let h = '<table class="cmp-t"><thead><tr><th></th>' + items.map(x => "<th>" + x.name + "</th>").join("") + "</tr></thead><tbody>";
+  rows.forEach(r => { h += '<tr><th class="r">' + r[0] + "</th>" + items.map((x, i) => '<td class="' + (r[2] ? "m" : "") + '">' + r[1](x, ev[i]) + "</td>").join("") + "</tr>"; });
+  $("cmp-wrap").innerHTML = h + "</tbody></table>";
+  $("overlay").classList.add("show");
+};
+$("close-cmp").onclick = () => $("overlay").classList.remove("show");
+$("overlay").onclick = e => { if (e.target === $("overlay")) $("overlay").classList.remove("show"); };
+
+/* ============================= EVENTS ============================= */
+["marks", "budget", "ctype", "w-fit", "w-aff", "w-str", "w-prox"].forEach(id => $(id).addEventListener("input", schedule));
+$("ctype").addEventListener("change", schedule);
+$("course").addEventListener("change", () => { refreshPlaceSelects($("district").value, $("city").value); ui.shown = 10; render(); });
+$("state").addEventListener("change", () => { refreshPlaceSelects("all", "all"); ui.shown = 10; render(); });
+$("district").addEventListener("change", () => { refreshPlaceSelects($("district").value, "all"); ui.shown = 10; render(); });
+$("city").addEventListener("change", () => { ui.shown = 10; render(); });
+$("sort").addEventListener("change", e => { ui.sort = e.target.value; render(); });
+$("show-long").addEventListener("change", e => { ui.showLong = e.target.checked; render(); });
+$("in-budget").addEventListener("change", e => { ui.inBudget = e.target.checked; ui.shown = 10; render(); });
+document.querySelectorAll("#toolbar .chip").forEach(b => b.addEventListener("click", () => {
+  document.querySelectorAll("#toolbar .chip").forEach(x => x.classList.remove("active"));
+  b.classList.add("active"); ui.filter = b.dataset.f; ui.shown = 10; render();
+}));
+$("reset-btn").onclick = () => {
+  $("marks").value = DEFAULTS.marks; $("budget").value = DEFAULTS.budget; $("course").value = DEFAULTS.course; $("state").value = DEFAULTS.state;
+  refreshPlaceSelects(DEFAULTS.district, DEFAULTS.city); $("ctype").value = DEFAULTS.ctype;
+  $("w-fit").value = DEFAULTS.wfit; $("w-aff").value = DEFAULTS.waff; $("w-str").value = DEFAULTS.wstr; $("w-prox").value = DEFAULTS.wprox;
+  ui = { filter: "all", sort: "match", showLong: false, shown: 10, selected: new Set(), last: null };
+  $("sort").value = "match"; $("show-long").checked = false; $("in-budget").checked = false;
+  document.querySelectorAll("#toolbar .chip").forEach(x => x.classList.toggle("active", x.dataset.f === "all"));
+  renderTray(); render();
+};
+
+/* ============================= ADVISOR (Claude, grounded on this page's data) ============================= */
+let sample = null, ctl = null, history = [];
+const SUGGESTIONS = [
+  "Hi Vee, I'm confused — where do I even start?",
+  "My budget is tight. What are my best options?",
+  "Which colleges near my district are actually worth it?",
+  "Compare two colleges for me"
+];
+function compact(x, p) {
+  const e = evaluate(x, p);
+  return { name: x.name, city: x.city, district: x.district, state: x.state, type: x.type, courses: x.courses.map(k => COURSE[k]), tier: x.tier,
+    fee_lakh_per_year: x.fee, fee_basis: x.basis, indicative_required_percentile: e.req, chance_for_student: e.chance, match_score: e.score,
+    admission_route: x.exams, branch_listing_cross_checked: x.checked, note: x.note };
+}
+const norm = s => String(s || "").toLowerCase().trim();
+const TOOLS = [
+  {
+    name: "search_colleges",
+    description: "Search the verified college dataset. All filters optional. Returns up to 12 colleges ranked by match score for the student's profile.",
+    inputSchema: { type: "object", properties: {
+      state: { type: "string", description: "One of: " + STATES.join(", ") },
+      district: { type: "string" }, city: { type: "string", description: "Town or city, e.g. Karad" },
+      course: { type: "string", description: "One of: " + Object.values(COURSE).join(", ") },
+      max_fee_lakh: { type: "number", description: "Keep colleges whose lowest fee is at or under this many lakh rupees per year" },
+      type: { type: "string", description: "government or private" },
+      limit: { type: "number" } } },
+    execute: input => {
+      $("answer-meta").textContent = "Searching the college data…";
+      const p = profile();
+      let l = D.slice();
+      if (input.state) l = l.filter(x => norm(x.state) === norm(input.state));
+      if (input.district) l = l.filter(x => norm(x.district) === norm(input.district));
+      if (input.city) l = l.filter(x => norm(x.city) === norm(input.city));
+      if (input.course) { const k = Object.keys(COURSE).find(k => norm(COURSE[k]) === norm(input.course) || norm(k) === norm(input.course)); if (k) l = l.filter(x => x.courses.includes(k)); }
+      if (typeof input.max_fee_lakh === "number") l = l.filter(x => x.fee[0] <= input.max_fee_lakh);
+      if (input.type) l = l.filter(x => x.grp === (norm(input.type).startsWith("g") ? "govt" : "private"));
+      const course = input.course ? Object.keys(COURSE).find(k => norm(COURSE[k]) === norm(input.course) || norm(k) === norm(input.course)) : p.course;
+      const out = l.map(x => ({ x, e: evaluate(x, { ...p, course: course || p.course }) })).sort((a, b) => b.e.score - a.e.score).slice(0, Math.min(12, input.limit || 12)).map(r => compact(r.x, p));
+      return { count_total_matches: l.length, results: out };
+    }
+  },
+  {
+    name: "get_college",
+    description: "Get the full record for one college by (partial) name, including sources.",
+    inputSchema: { type: "object", properties: { name: { type: "string" } }, required: ["name"] },
+    execute: input => {
+      const q = norm(input.name); const x = D.find(d => norm(d.name).includes(q)) || D.find(d => q.includes(norm(d.name).split(",")[0]));
+      if (!x) return { found: false };
+      $("answer-meta").textContent = "Looking up " + x.name + "…";
+      return { found: true, college: compact(x, profile()), sources: x.src.map(k => SRC[k][0]) };
+    }
+  },
+  {
+    name: "coverage",
+    description: "Count colleges per district (and which towns) for a course in a state. Use to answer 'which districts/towns do you have'.",
+    inputSchema: { type: "object", properties: { state: { type: "string" }, course: { type: "string" } } },
+    execute: input => {
+      $("answer-meta").textContent = "Checking coverage…";
+      const k = Object.keys(COURSE).find(k => norm(COURSE[k]) === norm(input.course) || norm(k) === norm(input.course));
+      const l = D.filter(x => (!input.state || norm(x.state) === norm(input.state)) && (!k || x.courses.includes(k)));
+      const by = {}; l.forEach(x => { by[x.district] = by[x.district] || { count: 0, towns: new Set() }; by[x.district].count++; by[x.district].towns.add(x.city); });
+      return Object.fromEntries(Object.entries(by).map(([d, v]) => [d, { count: v.count, towns: [...v.towns] }]));
+    }
+  }
+];
+
+function rules(p) {
+  return "You are Vee, a warm, down-to-earth admissions mentor for students in Maharashtra and across India — like a friendly senior who has been through CAP counselling and genuinely wants this student to feel less stressed.\n" +
+  "HOW YOU TALK: like a real person, not a report. Natural sentences, short paragraphs, no bullet lists, no markdown, no headings. Mirror the student's language (English, Hindi or Marathi) and mood. Open with a brief human reaction to what they said, then the answer, then at most ONE gentle follow-up question. Be encouraging but honest; never promise admission.\n" +
+  "GROUND RULES: 1) Use ONLY the tools (search_colleges, get_college, coverage) and the profile below. Never invent colleges, fees, cutoffs, placements or rankings. You cannot browse the web. 2) Fees have a basis: 'official', 'reported' (aggregator, may be stale) or 'est' (typical band, NOT a quote) — always say so for estimates. 3) 'indicative_required_percentile' is a tier-and-branch guide, not an official cutoff; point the student to the official CAP / JoSAA lists. 4) If a district or town has no college for a course, say so kindly and offer the nearest options the tools return. 5) If a college's branch list is only 'typical' (branch_listing_cross_checked is false), say they should confirm the branch on the official CAP page.\n" +
+  "STUDENT PROFILE: " + JSON.stringify({ percentile_or_merit: p.marks, budget_rupees_per_year: p.budget, course: COURSE[p.course], state: p.state, district: p.district, town: p.city, preferred_type: p.ctype }) + "\n" +
+  "Data covers " + D.length + " institutions in " + STATES.join(", ") + " (every Maharashtra district; some districts have no CAP-listed engineering college).";
+}
+
+const ERR = { no_key: "Add your Anthropic API key (or a proxy URL) under AI settings first.", bad_key: "The server's API key was rejected — check ANTHROPIC_API_KEY.", network: "Could not reach the CampusIQ server. Is it running?", error: "The API returned an error. Try again in a moment.", not_granted: "The advisor was not allowed to run. Reload and allow it to use it.", rate_limited: "Too many requests — wait a minute, then try again.", cancelled: "Stopped.", prompt_too_large: "That question is too long." };
+
+
+function mountAdvisor() {
+  $("advisor").classList.add("show");
+  $("answer").classList.add("show"); $("answer").textContent = "Hi, I'm Vee 👋 Choosing a college can feel overwhelming — I'll help you sort it out one step at a time. Tell me your percentile, budget and the place you like, or just ask me anything.";
+  $("suggest-row").innerHTML = SUGGESTIONS.map(s => '<button type="button" class="suggest"></button>').join("");
+  document.querySelectorAll(".suggest").forEach((b, i) => { b.textContent = SUGGESTIONS[i]; b.onclick = () => { $("ask-input").value = SUGGESTIONS[i]; ask(SUGGESTIONS[i]); }; });
+  $("ask-btn").onclick = () => ask($("ask-input").value);
+  $("ask-input").addEventListener("keydown", e => { if (e.key === "Enter") ask($("ask-input").value); });
+  $("stop-btn").onclick = () => ctl && ctl.abort();
+}
+
+
+/* ============== Built-in assistant: runs in this page, no server and no API key ============== */
+const KW = [[/\b(ai|artificial|machine learning|data science)\b/, "AI"], [/information technology|\bit\b/, "IT"], [/computer|\bcse?\b|software|coding/, "CS"], [/e&tc|entc|extc|e and tc|electronics|telecom/, "EL"], [/electrical/, "EE"], [/mechanical|\bmech\b/, "ME"], [/civil/, "CE"], [/chemical/, "CH"], [/instrument/, "IN"], [/production|industrial/, "PR"], [/textile/, "TX"], [/agri/, "AG"], [/mechatronic/, "MC"], [/plastic|polymer/, "PL"], [/aerospace|aeronautical/, "AE"], [/metallurg|material/, "MT"], [/mining/, "MN"], [/biotech/, "BT"], [/\bmba\b|management|business/, "BA"]];
+const ALIAS = { aurangabad: "Chhatrapati Sambhajinagar", sambhajinagar: "Chhatrapati Sambhajinagar", osmanabad: "Dharashiv", ahmednagar: "Ahilyanagar", bombay: "Mumbai" };
+const STATE_KW = { maharashtra: "Maharashtra", karnataka: "Karnataka", delhi: "Delhi NCR", "tamil nadu": "Tamil Nadu", gujarat: "Gujarat" };
+const CNAME = { gce: "government college engineering", spit: "sardar patel institute", pict: "pune institute computer", vit: "vishwakarma", pccoe: "pimpri chinchwad", kjsce: "somaiya", djsce: "dwarkadas", wce: "walchand", rcoem: "ramdeobaba", vnit: "visvesvaraya", iitb: "iit bombay", ycce: "yeshwantrao chavan" };
+const STOP = new Set(["college", "engineering", "institute", "technology", "university", "compare", "and", "the", "with", "for", "vs", "versus", "of", "me", "please", "between", "difference", "mechanical", "computer", "civil", "electrical", "electronics", "which", "better", "about", "tell", "fees", "cost", "details"]);
+const LABEL = { safe: "likely", target: "competitive", reach: "a reach", long: "a long shot" };
+let mem = {};
+const money = n => "₹" + (n / 100000).toFixed(2).replace(/\.?0+$/, "") + " L";
+const place = pl => pl.city !== "all" ? pl.city : pl.district !== "all" ? pl.district : pl.state !== "all" ? pl.state : "all states";
+
+function findPlace(t) {
+  for (const [a, d] of Object.entries(ALIAS)) if (t.includes(a)) return { state: "Maharashtra", district: d, city: "all" };
+  const esc = x => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  for (const c of [...new Set(D.map(x => x.city))].filter(c => !c.includes(",") && c.length > 3))
+    if (new RegExp("\\b" + esc(c.toLowerCase()) + "\\b").test(t)) { const r = D.find(x => x.city === c); return { state: r.state, district: r.district, city: c }; }
+  for (const d of MH_DISTRICTS) if (t.includes(d.toLowerCase())) return { state: "Maharashtra", district: d, city: "all" };
+  for (const [k, st] of Object.entries(STATE_KW)) if (t.includes(k)) return { state: st, district: "all", city: "all" };
+  if (/anywhere|all over|any state|whole india/.test(t)) return { state: "all", district: "all", city: "all" };
+  return null;
+}
+function parse(t) {
+  const f = {};
+  let m = t.match(/(\d{2}(?:\.\d+)?)\s*(?:%|percent|percentile|marks|score)/) || t.match(/(?:percentile|marks|score|got|scored)\D{0,12}(\d{2}(?:\.\d+)?)/);
+  if (m) f.marks = Math.min(100, parseFloat(m[1]));
+  m = t.match(/(\d+(?:\.\d+)?)\s*(?:l\b|lakh|lac)/);
+  if (m) f.budget = Math.round(parseFloat(m[1]) * 100000);
+  else { m = t.match(/(?:₹|rs\.?|inr)\s*(\d[\d,]{3,8})/) || t.match(/\b(\d{5,7})\b/); if (m) f.budget = parseInt(m[1].replace(/,/g, ""), 10); }
+  if (/tight|low budget|cheap|affordable|lowest|less fee|can't afford|cant afford/.test(t)) f.cheap = true;
+  for (const [re, k] of KW) if (re.test(t)) { f.course = k; break; }
+  const pl = findPlace(t); if (pl) f.place = pl;
+  return f;
+}
+function applyFound(f) {
+  if (f.marks != null) { $("marks").value = f.marks; mem.marks = true; }
+  if (f.budget != null) { $("budget").value = f.budget; mem.budget = true; }
+  if (f.course) $("course").value = f.course;
+  if (f.place) { $("state").value = f.place.state; refreshPlaceSelects(f.place.district, f.place.city); }
+  else if (f.course) refreshPlaceSelects($("district").value, $("city").value);
+  ui.shown = 10; render();
+}
+function findCollege(seg) {
+  seg = seg.replace(/\b[a-z]{3,5}\b/g, w => CNAME[w] || w);
+  const toks = seg.split(/[^a-z0-9]+/).filter(w => w.length >= 3 && !STOP.has(w));
+  let best = null;
+  for (const c of D) { const n = c.name.toLowerCase(); const sc = toks.filter(w => n.includes(w) || c.city.toLowerCase() === w).length; if (sc && (!best || sc > best.score)) best = { c, score: sc, n: toks.length }; }
+  return best;
+}
+function pickTwo(t) {
+  const found = t.split(/\band\b|\bvs\b|\bversus\b|\bwith\b|,/).map(findCollege).filter(Boolean);
+  return found.length >= 2 && found[0].c !== found[1].c ? [found[0].c, found[1].c] : null;
+}
+function brief(x, p) {
+  const e = evaluate(x, p), has = x.courses.includes(p.course);
+  return x.name + " is in " + x.city + ", " + x.district + " (" + x.type.toLowerCase() + "). Fees are about " + fmtFee(x) + " (" + BASIS[x.basis].long + "). " +
+    (has ? "For " + COURSE[p.course] + " it looks " + LABEL[e.chance] + " at your " + p.marks + " percentile (needs roughly " + e.req + "+)." : "It does not list " + COURSE[p.course] + " in my data. Branches I have: " + x.courses.map(k => COURSE[k]).join(", ") + ".");
+}
+function compareReply(a, b, p) {
+  const ea = evaluate(a, p), eb = evaluate(b, p), ma = (a.fee[0] + a.fee[1]) / 2, mb = (b.fee[0] + b.fee[1]) / 2;
+  let v = "";
+  if (a.courses.includes(p.course) && b.courses.includes(p.course)) {
+    v = "\n\nIn short: " + (ma === mb ? "they cost about the same" : (ma < mb ? a.name : b.name) + " is easier on the wallet") + ", and " + (ea.score === eb.score ? "they fit you equally well" : (ea.score > eb.score ? a.name : b.name) + " fits your profile better right now") + ".";
+  }
+  return "Good pair to compare! Here is how they stack up.\n\n" + brief(a, p) + "\n\n" + brief(b, p) + v + "\n\nFees here are typical ranges unless marked official, so please check each college's Official CAP page link before deciding. Which matters more to you — fees or admission chance?";
+}
+function detailReply(c, p) {
+  return "Sure, here is what I know.\n\n" + brief(c, p) + "\n\nAdmission route: " + c.exams + ". " + (c.note ? c.note + " " : "") + (c.code ? "You can confirm branches and seats on its Official CAP page (link on the card)." : "Please confirm fees and branches on the college's own site.");
+}
+function guide() {
+  return "Hi! No worries, this part confuses almost everyone, so let's take it step by step. To point you in the right direction I only need a few things: your percentile (or marks), roughly what you can spend per year, the district or town you like, and the branch you are interested in.\n\nYou can just write it in one sentence, like: “I have 82 percentile, budget 1 lakh, I want Mechanical near Karad.” I'll update the list on this page for you.\n\nWhat percentile did you get?";
+}
+function listReply(p, f, t) {
+  const res = getResults(p);
+  let items = res.items.filter(r => r.ev.chance !== "long"); if (!items.length) items = res.items;
+  items.sort(f.cheap ? (a, b) => (a.x.fee[0] + a.x.fee[1]) - (b.x.fee[0] + b.x.fee[1]) : (a, b) => b.ev.score - a.ev.score);
+  const top = items.slice(0, 5), openers = ["Got it.", "Sure, let's look at this together.", "Happy to help!", "Okay, here is what I found."];
+  let out = openers[t.length % 4] + " " + COURSE[p.course] + " around " + place(p) + ", about " + money(p.budget) + " a year, at " + p.marks + " percentile.";
+  if (!f.place && !mem.place) out += " (I used the place you already selected on the page — tell me another district if you like.)";
+  mem.place = true;
+  const note = res.notes.map(n => n.html.replace(/<[^>]+>/g, "")).join(" ");
+  if (note) out += "\n\n" + note;
+  if (!top.length) return out + "\n\nI could not find a match. Try a wider place, another branch, or a higher budget, and I'll look again.";
+  out += "\n\n" + (f.cheap ? "Starting with the most affordable:" : "These fit you best:") + "\n" + top.map((r, i) => (i + 1) + ". " + r.x.name + " (" + r.x.city + ", " + r.x.district + ") — " + fmtFee(r.x) + (r.x.basis === "official" ? "" : r.x.basis === "reported" ? " reported" : " est.") + ", " + LABEL[r.ev.chance] + " for you").join("\n");
+  const within = top.filter(r => r.x.fee[0] <= p.budget / 100000).length;
+  out += "\n\n" + within + " of these fit inside your budget. Fees are typical ranges unless marked official, and required percentiles are guides, not official cutoffs — each card on the page has an Official CAP link to confirm.";
+  return out + "\n\n" + (!mem.marks ? "What percentile did you get? I'll fine-tune the list." : !mem.budget ? "Roughly what yearly budget are you comfortable with?" : "Want me to compare two of these for you?");
+}
+function localReply(q) {
+  const t = q.toLowerCase(), f = parse(t), p0 = profile();
+  if (/compare|\bvs\b|versus|difference between/.test(t)) { const two = pickTwo(t); return two ? compareReply(two[0], two[1], p0) : "Sure — which two colleges? For example: “Compare KIT Kolhapur and GCE Karad”."; }
+  const hasInfo = f.marks != null || f.budget != null || f.course || f.place || f.cheap;
+  if (!hasInfo && /^(hi|hello|hey|namaste)\b|confus|where (do )?i (even )?start|help|don'?t know|guide|not sure/.test(t)) return guide();
+  const one = /about|fees?\b|cost|details|tell me|how is/.test(t) ? findCollege(t) : null;
+  if (one && !f.course && (one.score >= 2 || (one.score === one.n && !f.place))) return detailReply(one.c, p0);
+  applyFound(f);
+  return listReply(profile(), f, t);
+}
+async function ask(q) {
+  q = (q || "").trim(); if (!q) return;
+  const ans = $("answer"); ans.classList.add("show"); ans.textContent = "Thinking…";
+  await new Promise(r => setTimeout(r, 350));
+  ans.textContent = localReply(q);
+  $("answer-meta").textContent = "Built-in assistant — works offline. Confirm fees and cutoffs on official sources.";
+  $("ask-input").value = "";
+}
+mountAdvisor();
+
+initForm();
+render();
+</script>
+</body>
+</html>
